@@ -15,7 +15,7 @@ namespace Eco.TweenAnimation
         [SerializeField, LabelText("Select Animation"), TabGroup("Animation Setting")] 
         private EAnimation _animation;
         [SerializeField, LabelText("Show On Action"),TabGroup("Animation Setting")] 
-        private EShow _showOn;
+        private EShow _showOn = EShow.Awake;
         [SerializeField, HideLabel, TabGroup("Animation Setting")] 
         private Vector3Options _vector3Options;
         
