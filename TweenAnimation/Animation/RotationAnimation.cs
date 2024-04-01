@@ -7,33 +7,33 @@ namespace Eco.TweenAnimation
     {
         private AnimationFactory _factory;
         private Transform _transform;
-        private Vector3Options _vector3Options;
+        private Vector3Options _options;
         
         public void Initialized(AnimationFactory animationFactory)
         {
             _factory = animationFactory;
             _transform = animationFactory.TweenAnimation.transform;
-            _vector3Options = _factory.TweenAnimation.Vector3Options;
+            _options = _factory.TweenAnimation.Vector3Options;
         }
 
         public Tweener Show()
         {
-            _transform.rotation = Quaternion.Euler(_vector3Options.From);
+            _transform.rotation = Quaternion.Euler(_options.From);
             return _transform
-                .DORotate(_vector3Options.To, _vector3Options.Duration)
-                .SetEase(_vector3Options.ShowEase)
-                .SetUpdate(_vector3Options.IgnoreTimeScale)
-                .SetDelay(_vector3Options.StartDelay);
+                .DORotate(_options.To, _options.Duration)
+                .SetEase(_options.ShowEase)
+                .SetUpdate(_options.IgnoreTimeScale)
+                .SetDelay(_options.StartDelay);
         }
 
         public Tweener Hide()
         {
-            _transform.rotation = Quaternion.Euler(_vector3Options.To);
+            _transform.rotation = Quaternion.Euler(_options.To);
             return _transform
-                .DORotate(_vector3Options.From, _vector3Options.Duration)
-                .SetEase(_vector3Options.HideEase)
-                .SetUpdate(_vector3Options.IgnoreTimeScale)
-                .SetDelay(_vector3Options.StartDelay);
+                .DORotate(_options.From, _options.Duration)
+                .SetEase(_options.HideEase)
+                .SetUpdate(_options.IgnoreTimeScale)
+                .SetDelay(_options.StartDelay);
         }
     }
 }

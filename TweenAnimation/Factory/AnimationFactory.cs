@@ -24,6 +24,8 @@
                     return CreateObjectAnimation<ScaleAnimation>();
                 case EAnimation.Rotation:
                     return CreateObjectAnimation<RotationAnimation>();
+                case EAnimation.Fade:
+                    return CreateObjectAnimation<FadeAnimation>();
             }
             return null;
         }

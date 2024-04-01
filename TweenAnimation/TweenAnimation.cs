@@ -1,9 +1,10 @@
-﻿using Sirenix.OdinInspector;
+﻿using System;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Eco.TweenAnimation
 {
-    public enum EAnimation { Move, MoveLocal, MoveArchors, Scale, Rotation }
+    public enum EAnimation { Move, MoveLocal, MoveArchors, Scale, Rotation, Fade }
     public enum EShow { None, Awake, Enable }
     
     [HideMonoScript]
@@ -14,21 +15,28 @@ namespace Eco.TweenAnimation
         /// </summary>
         [SerializeField, LabelText("Select Animation"), TabGroup("Animation Setting")] 
         private EAnimation _animation;
-        [SerializeField, LabelText("Show On Action"),TabGroup("Animation Setting")] 
+        [SerializeField, LabelText("Show On Action"), TabGroup("Animation Setting")] 
         private EShow _showOn = EShow.Awake;
-        [SerializeField, HideLabel, TabGroup("Animation Setting")] 
+        
+        [SerializeField, LabelText("Canvas Group"), TabGroup("Animation Setting"), ShowIf("@IsFadeAnimation()")]
+        private CanvasGroup _canvasGroup;
+        
+        [SerializeField, HideLabel, TabGroup("Animation Setting"), ShowIf("@IsVector3Animation()")] 
         private Vector3Options _vector3Options;
+        [SerializeField, HideLabel, TabGroup("Animation Setting"), ShowIf("@IsFadeAnimation()")] 
+        private CanvasGroupOptions _canvasGroupOptions;
         
         /// <summary>
         /// Animation Setting Group
         /// </summary>
         [SerializeField, HideLabel, TabGroup("Animation Debug")] 
-        private AnimationDebug _animationDebug;
-
+        internal AnimationDebug _animationDebug;
         private AnimationFactory _factory;
         
         public EAnimation Animation { get => _animation; }
+        public CanvasGroup CanvasGroup { get => _canvasGroup; }
         public Vector3Options Vector3Options { get => _vector3Options; }
+        public CanvasGroupOptions CanvasGroupOptions { get => _canvasGroupOptions; }
 
         [OnInspectorInit]
         private void InitializedDebug()
@@ -63,5 +71,26 @@ namespace Eco.TweenAnimation
             _factory ??= new AnimationFactory(this);
             return _factory;
         }
+
+        private bool IsFadeAnimation()
+        {
+            return _animation == EAnimation.Fade;
+        }
+        
+        private bool IsVector3Animation()
+        {
+            return _animation != EAnimation.Fade;
+        }
+        
+        #if UNITY_EDITOR
+        private void OnValidate()
+        {
+            if (_canvasGroup == null)
+            {
+                if (!TryGetComponent(out _canvasGroup))
+                    _canvasGroup = gameObject.AddComponent<CanvasGroup>();
+            }
+        }
+#endif
     }   
 }
