@@ -54,16 +54,16 @@ namespace Eco.TweenAnimation
             if(_showOn == EShow.Enable) Show();
         }
 
-        public void Show()
+        public void Show(float durationDelta = 1f)
         {
             IAnimation animation = GetFactory().CreateAnimation();
-            animation.Show();
+            animation.Show(durationDelta);
         }
 
-        public void Hide()
+        public void Hide(float durationDelta = 1f)
         {
             IAnimation animation = GetFactory().CreateAnimation();
-            animation.Hide();
+            animation.Hide(durationDelta);
         }
 
         private AnimationFactory GetFactory()
@@ -85,7 +85,7 @@ namespace Eco.TweenAnimation
         #if UNITY_EDITOR
         private void OnValidate()
         {
-            if (_canvasGroup == null)
+            if (IsFadeAnimation() && _canvasGroup == null)
             {
                 if (!TryGetComponent(out _canvasGroup))
                     _canvasGroup = gameObject.AddComponent<CanvasGroup>();

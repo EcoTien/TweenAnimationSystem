@@ -16,24 +16,24 @@ namespace Eco.TweenAnimation
             _options = _factory.TweenAnimation.Vector3Options;
         }
 
-        public Tweener Show()
+        public Tweener Show(float durationDelta = 1f)
         {
             _transform.anchoredPosition = _options.From;
             return _transform
-                .DOAnchorPos(_options.To, _options.Duration)
+                .DOAnchorPos(_options.To, _options.Duration * durationDelta)
                 .SetEase(_options.ShowEase)
                 .SetUpdate(_options.IgnoreTimeScale)
-                .SetDelay(_options.StartDelay);
+                .SetDelay(_options.StartDelay * durationDelta);
         }
 
-        public Tweener Hide()
+        public Tweener Hide(float durationDelta = 1f)
         {
             _transform.anchoredPosition = _options.To;
             return _transform
-                .DOAnchorPos(_options.From, _options.Duration)
+                .DOAnchorPos(_options.From, _options.Duration * durationDelta)
                 .SetEase(_options.HideEase)
                 .SetUpdate(_options.IgnoreTimeScale)
-                .SetDelay(_options.StartDelay);
+                .SetDelay(_options.StartDelay * durationDelta);
         }
     }
 }

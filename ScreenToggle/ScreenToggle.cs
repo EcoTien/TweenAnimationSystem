@@ -37,14 +37,14 @@ public class ScreenToggle : MonoBehaviour
         this.RemoveScreenToggle();
     }
 
-    public void Toggle(bool isEnable)
+    public void Toggle(bool isEnable, float durationDelta = 1f)
     {
         foreach (var tweenAnimation in _tweenAnimations)
         {
             if(isEnable)
-                tweenAnimation.Show();
+                tweenAnimation.Show(durationDelta);
             else
-                tweenAnimation.Hide();
+                tweenAnimation.Hide(durationDelta);
         }
     }
 }

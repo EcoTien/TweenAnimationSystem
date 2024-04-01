@@ -14,12 +14,12 @@ public static class ScreenToggleManager
         _currentScreenToggles.Remove(screenToggle);
     }
 
-    public static void Toggle(bool isEnable)
+    public static void Toggle(bool isEnable, float durationDelta = 1f)
     {
         foreach (var currentScreenToggle in _currentScreenToggles)
         {
             if(currentScreenToggle.gameObject.activeInHierarchy)
-                currentScreenToggle.Toggle(isEnable);
+                currentScreenToggle.Toggle(isEnable, durationDelta);
         }
     }
 }
