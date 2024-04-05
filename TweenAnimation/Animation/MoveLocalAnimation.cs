@@ -18,7 +18,7 @@ namespace Eco.TweenAnimation
 
         public Tweener Show(float durationDelta = 1f)
         {
-            _transform.localPosition = _options.From;
+            //_transform.localPosition = _options.From;
             return _transform
                 .DOLocalMove(_options.To, _options.Duration * durationDelta)
                 .SetEase(_options.ShowEase)
@@ -28,7 +28,7 @@ namespace Eco.TweenAnimation
 
         public Tweener Hide(float durationDelta = 1f)
         {
-            _transform.localPosition = _options.To;
+            //_transform.localPosition = _options.To;
             return _transform
                 .DOLocalMove(_options.From, _options.Duration * durationDelta)
                 .SetEase(_options.HideEase)

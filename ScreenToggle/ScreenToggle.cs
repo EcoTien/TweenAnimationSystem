@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class ScreenToggle : MonoBehaviour
 {
-    [SerializeField] private TweenAnimation[] _tweenAnimations;
-    
+    private TweenAnimation[] _tweenAnimations;
+
     [Button("Show All")]
     public void ShowAll()
     {
@@ -29,6 +29,7 @@ public class ScreenToggle : MonoBehaviour
 
     private void Awake()
     {
+        _tweenAnimations = GetComponentsInChildren<TweenAnimation>();
         this.RegisterScreenToggle();
     }
 
@@ -41,10 +42,15 @@ public class ScreenToggle : MonoBehaviour
     {
         foreach (var tweenAnimation in _tweenAnimations)
         {
-            if(isEnable)
-                tweenAnimation.Show(durationDelta);
+            if (isEnable)
+            {
+                Debug.Log("Tween Animation....");
+                tweenAnimation?.Show(durationDelta);
+            }
             else
-                tweenAnimation.Hide(durationDelta);
+            {
+                tweenAnimation?.Hide(durationDelta);
+            }
         }
     }
 }

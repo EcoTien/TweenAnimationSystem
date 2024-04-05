@@ -18,7 +18,6 @@ namespace Eco.TweenAnimation
 
         public Tweener Show(float durationDelta = 1f)
         {
-            _transform.anchoredPosition = _options.From;
             return _transform
                 .DOAnchorPos(_options.To, _options.Duration * durationDelta)
                 .SetEase(_options.ShowEase)
@@ -28,7 +27,7 @@ namespace Eco.TweenAnimation
 
         public Tweener Hide(float durationDelta = 1f)
         {
-            _transform.anchoredPosition = _options.To;
+            //_transform.anchoredPosition = _options.To;
             return _transform
                 .DOAnchorPos(_options.From, _options.Duration * durationDelta)
                 .SetEase(_options.HideEase)
