@@ -14,11 +14,12 @@ namespace Eco.TweenAnimation
             _factory = animationFactory;
             _transform = animationFactory.TweenAnimation.transform;
             _options = _factory.TweenAnimation.Vector3Options;
+            _options.To = _transform.localRotation.eulerAngles;
         }
 
         public Tweener Show(float durationDelta = 1f)
         {
-            //_transform.rotation = Quaternion.Euler(_options.From);
+            _transform.rotation = Quaternion.Euler(_options.From);
             return _transform
                 .DORotate(_options.To, _options.Duration * durationDelta)
                 .SetEase(_options.ShowEase)
@@ -28,7 +29,7 @@ namespace Eco.TweenAnimation
 
         public Tweener Hide(float durationDelta = 1f)
         {
-            //_transform.rotation = Quaternion.Euler(_options.To);
+            _transform.rotation = Quaternion.Euler(_options.To);
             return _transform
                 .DORotate(_options.From, _options.Duration * durationDelta)
                 .SetEase(_options.HideEase)

@@ -14,12 +14,13 @@ namespace Eco.TweenAnimation
             _factory = animationFactory;
             _canvasGroup = animationFactory.TweenAnimation.CanvasGroup;
             _options = animationFactory.TweenAnimation.CanvasGroupOptions;
+            _options.To = _canvasGroup.alpha;
         }
 
         public Tweener Show(float durationDelta = 1f)
         {
             if (_options.BlockRaycast) _canvasGroup.blocksRaycasts = false;
-            //_canvasGroup.alpha = _options.From;
+            _canvasGroup.alpha = _options.From;
             
             return _canvasGroup
                 .DOFade(_options.To, _options.Duration * durationDelta)
@@ -36,7 +37,7 @@ namespace Eco.TweenAnimation
         public Tweener Hide(float durationDelta = 1f)
         {
             if (_options.BlockRaycast) _canvasGroup.blocksRaycasts = false;
-            //_canvasGroup.alpha = _options.To;
+            _canvasGroup.alpha = _options.To;
             
             return _canvasGroup
                 .DOFade(_options.From, _options.Duration * durationDelta)

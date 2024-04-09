@@ -32,6 +32,7 @@ namespace Eco.TweenAnimation
         [SerializeField, HideLabel, TabGroup("Animation Debug")] 
         internal AnimationDebug _animationDebug;
         private AnimationFactory _factory;
+        private IAnimation _ianimation;
         
         public EAnimation Animation { get => _animation; }
         public CanvasGroup CanvasGroup { get => _canvasGroup; }
@@ -46,24 +47,25 @@ namespace Eco.TweenAnimation
         
         private void Awake()
         {
-            if(_showOn == EShow.Awake) Show();
+            _ianimation = GetFactory().CreateAnimation();
+            if(_showOn == EShow.Awake) 
+                Show();
         }
 
         private void OnEnable()
         {
-            if(_showOn == EShow.Enable) Show();
+            if(_showOn == EShow.Enable) 
+                Show();
         }
 
         public void Show(float durationDelta = 1f)
         {
-            IAnimation animation = GetFactory().CreateAnimation();
-            animation.Show(durationDelta);
+            _ianimation.Show(durationDelta);
         }
 
         public void Hide(float durationDelta = 1f)
         {
-            IAnimation animation = GetFactory().CreateAnimation();
-            animation.Hide(durationDelta);
+            _ianimation.Hide(durationDelta);
         }
 
         private AnimationFactory GetFactory()

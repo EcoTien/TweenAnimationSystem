@@ -21,12 +21,6 @@ public class ScreenToggle : MonoBehaviour
             tweenAnimation.Hide();
     }
 
-    [Button("Get All Child Animation")]
-    public void GetAllChildAnimation()
-    {
-        _tweenAnimations = transform.GetComponentsInChildren<TweenAnimation>();
-    }
-
     private void Awake()
     {
         _tweenAnimations = GetComponentsInChildren<TweenAnimation>();
