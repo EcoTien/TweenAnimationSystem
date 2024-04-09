@@ -1,4 +1,5 @@
 ﻿using System;
+using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -17,10 +18,14 @@ namespace Eco.TweenAnimation
         private EAnimation _animation;
         [SerializeField, LabelText("Show On Action"), TabGroup("Animation Setting")] 
         private EShow _showOn = EShow.Awake;
+        [SerializeField, LabelText("Register In Screen Toggle"), TabGroup("Animation Setting")] 
+        private bool _registerScreenToggle = true;
         
         [SerializeField, LabelText("Canvas Group"), TabGroup("Animation Setting"), ShowIf("@IsFadeAnimation()")]
         private CanvasGroup _canvasGroup;
         
+        [SerializeField, HideLabel, TabGroup("Animation Setting")] 
+        private BaseOptions _baseOptions;
         [SerializeField, HideLabel, TabGroup("Animation Setting"), ShowIf("@IsVector3Animation()")] 
         private Vector3Options _vector3Options;
         [SerializeField, HideLabel, TabGroup("Animation Setting"), ShowIf("@IsFadeAnimation()")] 
@@ -35,7 +40,9 @@ namespace Eco.TweenAnimation
         private IAnimation _ianimation;
         
         public EAnimation Animation { get => _animation; }
+        public bool IsRegisterScreenToggle { get => _registerScreenToggle; }
         public CanvasGroup CanvasGroup { get => _canvasGroup; }
+        public BaseOptions BaseOptions { get => _baseOptions; }
         public Vector3Options Vector3Options { get => _vector3Options; }
         public CanvasGroupOptions CanvasGroupOptions { get => _canvasGroupOptions; }
 
@@ -60,11 +67,28 @@ namespace Eco.TweenAnimation
 
         public void Show(float durationDelta = 1f)
         {
-            _ianimation.Show(durationDelta);
+            if(!gameObject.activeInHierarchy)
+                return;
+            
+            if (_baseOptions.LoopTime > 0 || _baseOptions.LoopTime == -1)
+            {
+                Sequence sequence = DOTween.Sequence();
+                sequence.Append(_ianimation.Show(durationDelta));
+                sequence.AppendInterval(_baseOptions.DelayPerOneTimeLoop);
+                sequence.SetLoops(_baseOptions.LoopTime, _baseOptions.LoopType);
+                sequence.Play();
+            }
+            else
+            {
+                _ianimation.Show(durationDelta);
+            }
         }
 
         public void Hide(float durationDelta = 1f)
         {
+            if(!gameObject.activeInHierarchy)
+                return;
+            
             _ianimation.Hide(durationDelta);
         }
 

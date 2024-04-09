@@ -36,6 +36,9 @@ public class ScreenToggle : MonoBehaviour
     {
         foreach (var tweenAnimation in _tweenAnimations)
         {
+            if(!tweenAnimation.IsRegisterScreenToggle)
+                continue;
+            
             if (isEnable)
             {
                 Debug.Log("Tween Animation....");
