@@ -9,7 +9,7 @@ namespace Eco.TweenAnimation
     public enum EShow { None, Awake, Enable }
     
     [HideMonoScript]
-    public class TweenAnimation : MonoBehaviour
+    public class TweenAnimation : MonoBehaviour, ITweenAnimation
     { 
         /// <summary>
         /// Animation Setting Group
@@ -65,30 +65,27 @@ namespace Eco.TweenAnimation
                 Show();
         }
 
-        public void Show(float durationDelta = 1f)
+        public void Show(float durationDelta = 1f, TweenCallback onComplete = null)
         {
-            if(!gameObject.activeInHierarchy)
-                return;
-            
+            gameObject.SetActive(true);
             if (_baseOptions.LoopTime > 0 || _baseOptions.LoopTime == -1)
             {
                 Sequence sequence = DOTween.Sequence();
                 sequence.Append(_ianimation.Show(durationDelta));
                 sequence.AppendInterval(_baseOptions.DelayPerOneTimeLoop);
                 sequence.SetLoops(_baseOptions.LoopTime, _baseOptions.LoopType);
+                sequence.OnComplete(onComplete);
                 sequence.Play();
             }
             else
             {
-                _ianimation.Show(durationDelta);
+                _ianimation.Show(durationDelta).onComplete += onComplete;
             }
         }
 
         public void Hide(float durationDelta = 1f)
         {
-            if(!gameObject.activeInHierarchy)
-                return;
-            
+            gameObject.SetActive(true);
             _ianimation.Hide(durationDelta);
         }
 

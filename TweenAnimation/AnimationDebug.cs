@@ -6,9 +6,9 @@ namespace Eco.TweenAnimation
     [System.Serializable]
     public class AnimationDebug
     {
-        private TweenAnimation _tweenAnimation;
+        private ITweenAnimation _tweenAnimation;
 
-        public AnimationDebug(TweenAnimation tweenAnimation)
+        public AnimationDebug(ITweenAnimation tweenAnimation)
         {
             _tweenAnimation = tweenAnimation;
         }
