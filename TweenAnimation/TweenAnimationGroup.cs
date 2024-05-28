@@ -18,7 +18,6 @@ namespace Eco.TweenAnimation
             int childCount = _parent.childCount;
             for (int i = 0; i < childCount; i++)
                 _tweenAnimations.AddRange(_parent.GetChild(i).GetComponents<ITweenAnimation>());
-                
         }
         public void Show(float durationDelta = 1, TweenCallback onComplete = null)
         {

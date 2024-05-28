@@ -51,12 +51,14 @@ namespace Eco.TweenAnimation
 
         public void Show(float durationDelta = 1f, TweenCallback onComplete = null)
         {
+            gameObject.SetActive(true);
             StartCoroutine(IEDelaySequence(() =>
                 StartCoroutine(IERunSequence(_showOption, durationDelta, onComplete))));
         }
         
         public void Hide(float durationDelta = 1f)
         {
+            gameObject.SetActive(true);
             StartCoroutine(IEDelaySequence(() =>
                 StartCoroutine(IERunSequence(_hideOption))));
         }
