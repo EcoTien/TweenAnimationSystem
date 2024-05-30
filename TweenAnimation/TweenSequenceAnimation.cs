@@ -46,7 +46,7 @@ namespace Eco.TweenAnimation
             for (var i = 0; i < _showOption.Sequences.Length; i++)
                 _showOption.Sequences[i].TweenAnimation.gameObject.SetActive(false);
             for (var i = 0; i < _hideOption.Sequences.Length; i++)
-                _showOption.Sequences[i].TweenAnimation.gameObject.SetActive(false);
+                _hideOption.Sequences[i].TweenAnimation.gameObject.SetActive(false);
         }
 
         public void Show(float durationDelta = 1f, TweenCallback onComplete = null)
@@ -81,15 +81,25 @@ namespace Eco.TweenAnimation
                 AnimationSequenceSetting animationSequenceSetting = sequenceOption.Sequences[i];
                 animationSequenceSetting.TweenAnimation.Show(durationDelta, () => complete = true);
                 yield return new WaitUntil(() => complete);
-                if(_deActivateOnShowComplete) 
-                    animationSequenceSetting.TweenAnimation.gameObject.SetActive(false);
-                if(animationSequenceSetting.IsShowBase)
-                    Base?.SetActive(true);
-                if(animationSequenceSetting.IsHideBase)
-                    Base?.SetActive(false);
+                if(_deActivateOnShowComplete) animationSequenceSetting.TweenAnimation.gameObject.SetActive(false);
+                if (animationSequenceSetting.IsShowBase) ToggleBase(true);
+                if(animationSequenceSetting.IsHideBase) ToggleBase(false);
                 complete = false;
             }
             onComplete?.Invoke();
+        }
+
+        private void ToggleBase(bool isEnable)
+        {
+            TweenAnimation animation = Base.GetComponent<TweenAnimation>();
+            if (animation != null && isEnable)
+                animation.Show();
+            else if (animation == null && isEnable)
+                Base?.SetActive(true);
+            if (animation != null && !isEnable)
+                animation.Hide();
+            else if (animation == null && !isEnable)
+                Base?.SetActive(false);
         }
     }
 
