@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Eco.TweenAnimation
 {
-    public enum EAnimation { Move, MoveLocal, MoveArchors, Scale, Rotation, Fade }
+    public enum EAnimation { Move, MoveLocal, MoveArchors, Scale, Rotation, Fade, SizeDelta }
     public enum EShow { None, Awake, Enable }
     
     [HideMonoScript]
@@ -38,6 +38,8 @@ namespace Eco.TweenAnimation
         internal AnimationDebug _animationDebug;
         private AnimationFactory _factory;
         private IAnimation _ianimation;
+        private Tweener _tweener;
+        private Sequence _sequence;
         
         public EAnimation Animation { get => _animation; }
         public bool IsRegisterScreenToggle { get => _registerScreenToggle; }
@@ -70,23 +72,24 @@ namespace Eco.TweenAnimation
             gameObject.SetActive(true);
             if (_baseOptions.LoopTime > 0 || _baseOptions.LoopTime == -1)
             {
-                Sequence sequence = DOTween.Sequence();
-                sequence.Append(_ianimation.Show(durationDelta));
-                sequence.AppendInterval(_baseOptions.DelayPerOneTimeLoop);
-                sequence.SetLoops(_baseOptions.LoopTime, _baseOptions.LoopType);
-                sequence.OnComplete(onComplete);
-                sequence.Play();
+                _sequence = DOTween.Sequence();
+                _sequence.Append(_ianimation.Show(durationDelta));
+                _sequence.AppendInterval(_baseOptions.DelayPerOneTimeLoop);
+                _sequence.SetLoops(_baseOptions.LoopTime, _baseOptions.LoopType);
+                _sequence.OnComplete(onComplete);
+                _sequence.Play();
             }
             else
             {
-                _ianimation.Show(durationDelta).onComplete += onComplete;
+                _tweener = _ianimation.Show(durationDelta);
+                _tweener.onComplete += onComplete;
             }
         }
 
         public void Hide(float durationDelta = 1f)
         {
             gameObject.SetActive(true);
-            _ianimation.Hide(durationDelta);
+            _tweener = _ianimation.Hide(durationDelta);
         }
 
         private AnimationFactory GetFactory()
@@ -103,6 +106,11 @@ namespace Eco.TweenAnimation
         private bool IsVector3Animation()
         {
             return _animation != EAnimation.Fade;
+        }
+
+        public bool IsRunning()
+        {
+            return (_tweener != null && _tweener.IsPlaying()) || (_sequence != null && _sequence.IsPlaying());
         }
         
         #if UNITY_EDITOR

@@ -21,7 +21,7 @@ namespace Eco.TweenAnimation
 
         public Tweener Show(float durationDelta = 1f)
         {
-            if (_customOptions.BlockRaycast) _canvasGroup.blocksRaycasts = false;
+            if(_customOptions.From > 0) _canvasGroup.blocksRaycasts = true;
             _canvasGroup.alpha = _customOptions.From;
             
             return _canvasGroup
@@ -34,19 +34,25 @@ namespace Eco.TweenAnimation
 
         private void OnShowComplete()
         {
-            if (_customOptions.BlockRaycast) _canvasGroup.blocksRaycasts = true;
+            if(_customOptions.To == 0) _canvasGroup.blocksRaycasts = false;
         }
 
         public Tweener Hide(float durationDelta = 1f)
         {
-            if (_customOptions.BlockRaycast) _canvasGroup.blocksRaycasts = false;
+            if(_customOptions.To > 0) _canvasGroup.blocksRaycasts = true;
             _canvasGroup.alpha = _customOptions.To;
             
             return _canvasGroup
                 .DOFade(_customOptions.From, _options.Duration * durationDelta)
                 .SetEase(_options.ShowEase)
                 .SetUpdate(_options.IgnoreTimeScale)
-                .SetDelay(_options.StartDelay * durationDelta);
+                .SetDelay(_options.StartDelay * durationDelta)
+                .OnComplete(OnHideComplete);
+        }
+        
+        private void OnHideComplete()
+        {
+            if(_customOptions.From == 0) _canvasGroup.blocksRaycasts = false;
         }
     }
 }
