@@ -2,10 +2,11 @@
 using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Eco.TweenAnimation
 {
-    public enum EAnimation { Move, MoveLocal, MoveArchors, Scale, Rotation, Fade, SizeDelta }
+    public enum EAnimation { Move, MoveLocal, MoveArchors, Scale, Rotation, Fade, SizeDelta, FillAmount }
     public enum EShow { None, Awake, Enable }
     
     [HideMonoScript]
@@ -21,15 +22,20 @@ namespace Eco.TweenAnimation
         [SerializeField, LabelText("Register In Screen Toggle"), TabGroup("Animation Setting")] 
         private bool _registerScreenToggle = true;
         
-        [SerializeField, LabelText("Canvas Group"), TabGroup("Animation Setting"), ShowIf("@IsFadeAnimation()")]
+        [SerializeField, LabelText("Canvas Group"), TabGroup("Animation Setting"), ShowIf("IsFadeAnimation")]
         private CanvasGroup _canvasGroup;
+        
+        [SerializeField, LabelText("Canvas Group"), TabGroup("Animation Setting"), ShowIf("IsImageAnimation")]
+        private Image _image;
         
         [SerializeField, HideLabel, TabGroup("Animation Setting")] 
         private BaseOptions _baseOptions;
-        [SerializeField, HideLabel, TabGroup("Animation Setting"), ShowIf("@IsVector3Animation()")] 
+        [SerializeField, HideLabel, TabGroup("Animation Setting"), ShowIf("IsVector3Option")] 
         private Vector3Options _vector3Options;
-        [SerializeField, HideLabel, TabGroup("Animation Setting"), ShowIf("@IsFadeAnimation()")] 
+        [SerializeField, HideLabel, TabGroup("Animation Setting"), ShowIf("IsFadeAnimation")] 
         private CanvasGroupOptions _canvasGroupOptions;
+        [SerializeField, HideLabel, TabGroup("Animation Setting"), ShowIf("IsFloatOption")] 
+        private FloatOptions _floatOptions;
         
         /// <summary>
         /// Animation Setting Group
@@ -44,9 +50,11 @@ namespace Eco.TweenAnimation
         public EAnimation Animation { get => _animation; }
         public bool IsRegisterScreenToggle { get => _registerScreenToggle; }
         public CanvasGroup CanvasGroup { get => _canvasGroup; }
+        public Image Image { get => _image; }
         public BaseOptions BaseOptions { get => _baseOptions; }
         public Vector3Options Vector3Options { get => _vector3Options; }
         public CanvasGroupOptions CanvasGroupOptions { get => _canvasGroupOptions; }
+        public FloatOptions FloatOptions { get => _floatOptions; }
 
         [OnInspectorInit]
         private void InitializedDebug()
@@ -103,9 +111,19 @@ namespace Eco.TweenAnimation
             return _animation == EAnimation.Fade;
         }
         
-        private bool IsVector3Animation()
+        private bool IsVector3Option()
         {
-            return _animation != EAnimation.Fade;
+            return _animation != EAnimation.Fade && !IsFloatOption();
+        }
+        
+        private bool IsFloatOption()
+        {
+            return _animation == EAnimation.FillAmount;
+        }
+
+        private bool IsImageAnimation()
+        {
+            return _animation == EAnimation.FillAmount;
         }
 
         public bool IsRunning()
@@ -120,6 +138,12 @@ namespace Eco.TweenAnimation
             {
                 if (!TryGetComponent(out _canvasGroup))
                     _canvasGroup = gameObject.AddComponent<CanvasGroup>();
+            }
+
+            if (IsImageAnimation() && _image == null)
+            {
+                if (!TryGetComponent(out _image))
+                    _image = gameObject.AddComponent<Image>();
             }
         }
 #endif

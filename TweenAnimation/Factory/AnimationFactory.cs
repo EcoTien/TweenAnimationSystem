@@ -28,6 +28,8 @@
                     return CreateObjectAnimation<FadeAnimation>();
                 case EAnimation.SizeDelta:
                     return CreateObjectAnimation<SizeDeltaAnimation>();
+                case EAnimation.FillAmount:
+                    return CreateObjectAnimation<FillAmountAnimation>();
             }
             return null;
         }
