@@ -25,10 +25,10 @@ namespace Eco.TweenAnimation
                 _tweenAnimations[i].Show(durationDelta, onComplete);
         }
 
-        public void Hide(float durationDelta = 1)
+        public void Hide(float durationDelta = 1, TweenCallback onComplete = null)
         {
             for (var i = 0; i < _tweenAnimations.Count; i++)
-                _tweenAnimations[i].Hide(durationDelta);
+                _tweenAnimations[i].Hide(durationDelta, onComplete);
         }
     }
 }

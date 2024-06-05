@@ -94,10 +94,11 @@ namespace Eco.TweenAnimation
             }
         }
 
-        public void Hide(float durationDelta = 1f)
+        public void Hide(float durationDelta = 1f, TweenCallback onComplete = null)
         {
             gameObject.SetActive(true);
             _tweener = _ianimation.Hide(durationDelta);
+            _tweener.onComplete += onComplete;
         }
 
         private AnimationFactory GetFactory()

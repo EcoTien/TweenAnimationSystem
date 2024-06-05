@@ -44,14 +44,14 @@ namespace Eco.TweenAnimation
             }
         }
 
-        public void Hide(float durationDelta = 1)
+        public void Hide(float durationDelta = 1, TweenCallback onComplete = null)
         {
             foreach (var animationCustom in _hideAnimation)
             {
                 DOVirtual.DelayedCall(animationCustom.DelayShow, () =>
                 {
                     animationCustom.TweenAnimation.gameObject.SetActive(true);
-                    animationCustom.TweenAnimation.Hide();
+                    animationCustom.TweenAnimation.Hide(durationDelta, onComplete);
                     if (animationCustom.DeActivateOnComplete)
                     {
                         DOVirtual.DelayedCall(animationCustom.TweenAnimation.BaseOptions.Duration,
