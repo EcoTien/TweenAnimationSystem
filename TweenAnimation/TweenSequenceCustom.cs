@@ -40,7 +40,7 @@ namespace Eco.TweenAnimation
                             animationCustom.TweenAnimation.gameObject.SetActive(false);
                         onComplete?.Invoke();
                     });
-                });
+                }, false);
             }
         }
 
@@ -57,7 +57,7 @@ namespace Eco.TweenAnimation
                         DOVirtual.DelayedCall(animationCustom.TweenAnimation.BaseOptions.Duration,
                             () => { animationCustom.TweenAnimation.gameObject.SetActive(false); });
                     }
-                });
+                }, false);
             }
         }
 

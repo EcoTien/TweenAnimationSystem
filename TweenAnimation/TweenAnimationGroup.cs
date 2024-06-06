@@ -21,12 +21,14 @@ namespace Eco.TweenAnimation
         }
         public void Show(float durationDelta = 1, TweenCallback onComplete = null)
         {
+            gameObject.SetActive(true);
             for (var i = 0; i < _tweenAnimations.Count; i++)
                 _tweenAnimations[i].Show(durationDelta, onComplete);
         }
 
         public void Hide(float durationDelta = 1, TweenCallback onComplete = null)
         {
+            gameObject.SetActive(true);
             for (var i = 0; i < _tweenAnimations.Count; i++)
                 _tweenAnimations[i].Hide(durationDelta, onComplete);
         }
