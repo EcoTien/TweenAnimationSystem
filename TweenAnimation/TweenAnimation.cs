@@ -150,6 +150,18 @@ namespace Eco.TweenAnimation
             return (_tweener != null && _tweener.IsPlaying()) || (_sequence != null && _sequence.IsPlaying());
         }
 
+        private void OnDestroy()
+        {
+            _sequence?.Kill();
+            _tweener?.Kill();
+        }
+
+        private void OnDisable()
+        {
+            _sequence?.Kill();
+            _tweener?.Kill();
+        }
+
 #if UNITY_EDITOR
         private void OnValidate()
         {
