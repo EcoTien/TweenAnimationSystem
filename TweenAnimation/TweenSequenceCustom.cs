@@ -17,12 +17,14 @@ namespace Eco.TweenAnimation
         private void Awake()
         {
             _debug = new AnimationDebug(this);
-            if (_showOnAction == EShow.Awake) Show();
+            if (_showOnAction == EShow.Awake) 
+                Show();
         }
 
         private void OnEnable()
         {
-            if (_showOnAction == EShow.Enable) Show();
+            if (_showOnAction == EShow.Enable) 
+                Show();
         }
 
         public void Show(float durationDelta = 1, TweenCallback onComplete = null)

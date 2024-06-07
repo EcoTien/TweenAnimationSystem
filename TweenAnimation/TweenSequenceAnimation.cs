@@ -30,14 +30,14 @@ namespace Eco.TweenAnimation
         private void Awake()
         {
             _sequenceDebugOption = new AnimationDebug(this);
-            ResetAnimation();
-            if (_showOnAction == EShow.Awake) Show();
+            if (_showOnAction == EShow.Awake)
+                Show();
         }
         
         private void OnEnable()
         {
-            ResetAnimation();
-            if (_showOnAction == EShow.Enable) Show();
+            if (_showOnAction == EShow.Enable)
+                Show();
         }
 
         private void ResetAnimation()
@@ -52,6 +52,7 @@ namespace Eco.TweenAnimation
         public void Show(float durationDelta = 1f, TweenCallback onComplete = null)
         {
             gameObject.SetActive(true);
+            ResetAnimation();
             StartCoroutine(IEDelaySequence(() =>
                 StartCoroutine(IERunSequence(_showOption, durationDelta, onComplete))));
         }
@@ -59,6 +60,7 @@ namespace Eco.TweenAnimation
         public void Hide(float durationDelta = 1f, TweenCallback onComplete = null)
         {
             gameObject.SetActive(true);
+            ResetAnimation();
             StartCoroutine(IEDelaySequence(() =>
                 StartCoroutine(IERunSequence(_hideOption, durationDelta, onComplete))));
         }
