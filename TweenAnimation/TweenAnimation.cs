@@ -6,47 +6,59 @@ using UnityEngine.UI;
 
 namespace Eco.TweenAnimation
 {
-    public enum EAnimation { Move, MoveLocal, MoveArchors, Scale, Rotation, Fade, SizeDelta, FillAmount }
+    public enum EAnimation
+    {
+        Move, MoveLocal, MoveArchors,
+        Scale, Rotation, Fade,
+        SizeDelta, FillAmount
+    }
+
     public enum EShow { None, Awake, Enable }
-    
+
     [HideMonoScript]
     public class TweenAnimation : MonoBehaviour, ITweenAnimation
-    { 
+    {
         /// <summary>
         /// Animation Setting Group
         /// </summary>
-        [SerializeField, LabelText("Select Animation"), TabGroup("Animation Setting")] 
+        [SerializeField, LabelText("Select Animation"), TabGroup("Animation Setting")]
         private EAnimation _animation;
-        [SerializeField, LabelText("Show On Action"), TabGroup("Animation Setting")] 
+
+        [SerializeField, LabelText("Show On Action"), TabGroup("Animation Setting")]
         private EShow _showOn = EShow.Awake;
-        [SerializeField, LabelText("Register In Screen Toggle"), TabGroup("Animation Setting")] 
+
+        [SerializeField, LabelText("Register In Screen Toggle"), TabGroup("Animation Setting")]
         private bool _registerScreenToggle = true;
-        
+
         [SerializeField, LabelText("Canvas Group"), TabGroup("Animation Setting"), ShowIf("IsFadeAnimation")]
         private CanvasGroup _canvasGroup;
-        
+
         [SerializeField, LabelText("Canvas Group"), TabGroup("Animation Setting"), ShowIf("IsImageAnimation")]
         private Image _image;
-        
-        [SerializeField, HideLabel, TabGroup("Animation Setting")] 
+
+        [SerializeField, HideLabel, TabGroup("Animation Setting")]
         private BaseOptions _baseOptions;
-        [SerializeField, HideLabel, TabGroup("Animation Setting"), ShowIf("IsVector3Option")] 
+
+        [SerializeField, HideLabel, TabGroup("Animation Setting"), ShowIf("IsVector3Option")]
         private Vector3Options _vector3Options;
-        [SerializeField, HideLabel, TabGroup("Animation Setting"), ShowIf("IsFadeAnimation")] 
+
+        [SerializeField, HideLabel, TabGroup("Animation Setting"), ShowIf("IsFadeAnimation")]
         private CanvasGroupOptions _canvasGroupOptions;
-        [SerializeField, HideLabel, TabGroup("Animation Setting"), ShowIf("IsFloatOption")] 
+
+        [SerializeField, HideLabel, TabGroup("Animation Setting"), ShowIf("IsFloatOption")]
         private FloatOptions _floatOptions;
-        
+
         /// <summary>
         /// Animation Setting Group
         /// </summary>
-        [SerializeField, HideLabel, TabGroup("Animation Debug")] 
+        [SerializeField, HideLabel, TabGroup("Animation Debug")]
         internal AnimationDebug _animationDebug;
+
         private AnimationFactory _factory;
         private IAnimation _ianimation;
         private Tweener _tweener;
         private Sequence _sequence;
-        
+
         public EAnimation Animation { get => _animation; }
         public bool IsRegisterScreenToggle { get => _registerScreenToggle; }
         public CanvasGroup CanvasGroup { get => _canvasGroup; }
@@ -61,22 +73,22 @@ namespace Eco.TweenAnimation
         {
             _animationDebug = new AnimationDebug(this);
         }
-        
+
         private void Awake()
         {
-            _ianimation = GetFactory().CreateAnimation();
-            if(_showOn == EShow.Awake) 
+            if (_showOn == EShow.Awake)
                 Show();
         }
 
         private void OnEnable()
         {
-            if(_showOn == EShow.Enable) 
+            if (_showOn == EShow.Enable)
                 Show();
         }
 
         public void Show(float durationDelta = 1f, TweenCallback onComplete = null)
         {
+            CheckAndInitialized();
             gameObject.SetActive(true);
             if (_baseOptions.LoopTime > 0 || _baseOptions.LoopTime == -1)
             {
@@ -96,9 +108,15 @@ namespace Eco.TweenAnimation
 
         public void Hide(float durationDelta = 1f, TweenCallback onComplete = null)
         {
+            CheckAndInitialized();
             gameObject.SetActive(true);
             _tweener = _ianimation.Hide(durationDelta);
             _tweener.onComplete += onComplete;
+        }
+
+        private void CheckAndInitialized()
+        {
+            _ianimation ??= GetFactory().CreateAnimation();
         }
 
         private AnimationFactory GetFactory()
@@ -111,12 +129,12 @@ namespace Eco.TweenAnimation
         {
             return _animation == EAnimation.Fade;
         }
-        
+
         private bool IsVector3Option()
         {
             return _animation != EAnimation.Fade && !IsFloatOption();
         }
-        
+
         private bool IsFloatOption()
         {
             return _animation == EAnimation.FillAmount;
@@ -131,8 +149,8 @@ namespace Eco.TweenAnimation
         {
             return (_tweener != null && _tweener.IsPlaying()) || (_sequence != null && _sequence.IsPlaying());
         }
-        
-        #if UNITY_EDITOR
+
+#if UNITY_EDITOR
         private void OnValidate()
         {
             if (IsFadeAnimation() && _canvasGroup == null)
@@ -148,5 +166,5 @@ namespace Eco.TweenAnimation
             }
         }
 #endif
-    }   
+    }
 }
