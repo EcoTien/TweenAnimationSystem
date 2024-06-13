@@ -22,7 +22,7 @@ namespace Eco.TweenAnimation
 
         public Tweener Show(float durationDelta = 1f)
         {
-            _transform.sizeDelta = _customOptions.From;
+            _transform.anchorMin = _customOptions.From;
             return _transform
                 .DOAnchorMin(_customOptions.EndTo, _options.Duration * durationDelta)
                 .SetEase(_options.ShowEase)
@@ -32,7 +32,7 @@ namespace Eco.TweenAnimation
 
         public Tweener Hide(float durationDelta = 1f)
         {
-            _transform.sizeDelta = _customOptions.EndTo;
+            _transform.anchorMin = _customOptions.EndTo;
             return _transform
                 .DOAnchorMin(_customOptions.From, _options.Duration * durationDelta)
                 .SetEase(_options.HideEase)

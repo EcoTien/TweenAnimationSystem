@@ -43,7 +43,6 @@ namespace Eco.TweenAnimation
 
         private void ResetAnimation()
         {
-            Base.gameObject.SetActive(false);
             for (var i = 0; i < _showOption.Sequences.Length; i++)
                 _showOption.Sequences[i].tweenAnimation.gameObject.SetActive(false);
             for (var i = 0; i < _hideOption.Sequences.Length; i++)
@@ -115,7 +114,9 @@ namespace Eco.TweenAnimation
     [System.Serializable]
     public class AnimationSequenceSetting
     {
-        [FormerlySerializedAs("tweenAnimationBase")] [FormerlySerializedAs("TweenAnimation")] public TweenAnimation tweenAnimation;
+        [FormerlySerializedAs("tweenAnimationBase")]
+        [FormerlySerializedAs("TweenAnimation")]
+        public TweenAnimationBase tweenAnimation;
         public bool IsShowBase;
         public bool IsHideBase;
     }
