@@ -16,14 +16,15 @@ namespace Eco.TweenAnimation
             _transform = animationFactory.TweenAnimation.transform;
             _options = _factory.TweenAnimation.BaseOptions;
             _customOptions = _factory.TweenAnimation.Vector3Options;
-            _customOptions.To = _transform.localPosition;
+            if(_customOptions.EndTo == Vector3.one * -1f)
+                _customOptions.EndTo = _transform.localPosition;
         }
 
         public Tweener Show(float durationDelta = 1f)
         {
             _transform.localPosition = _customOptions.From;
             return _transform
-                .DOLocalMove(_customOptions.To, _options.Duration * durationDelta)
+                .DOLocalMove(_customOptions.EndTo, _options.Duration * durationDelta)
                 .SetEase(_options.ShowEase)
                 .SetUpdate(_options.IgnoreTimeScale)
                 .SetDelay(_options.StartDelay * durationDelta);
@@ -31,7 +32,7 @@ namespace Eco.TweenAnimation
 
         public Tweener Hide(float durationDelta = 1f)
         {
-            _transform.localPosition = _customOptions.To;
+            _transform.localPosition = _customOptions.EndTo;
             return _transform
                 .DOLocalMove(_customOptions.From, _options.Duration * durationDelta)
                 .SetEase(_options.HideEase)

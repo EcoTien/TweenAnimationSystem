@@ -1,23 +1,20 @@
-﻿using System;
 using System.Collections.Generic;
 using DG.Tweening;
 using Sirenix.OdinInspector;
-using UnityEngine;
 
 namespace Eco.TweenAnimation
 {
-    public class TweenAnimationGroup : TweenAnimationBase
+    public class TweenAnimationObject : TweenAnimationBase
     {
-        [SerializeField] private Transform _parent;
         [HideLabel] public AnimationDebug AnimationDebug;
         private List<TweenAnimationBase> _tweenAnimations = new ();
 
         private void Awake()
         {
             AnimationDebug = new AnimationDebug(this);
-            int childCount = _parent.childCount;
-            for (int i = 0; i < childCount; i++)
-                _tweenAnimations.AddRange(_parent.GetChild(i).GetComponents<TweenAnimationBase>());
+            TweenAnimationBase[] animations = GetComponents<TweenAnimationBase>();
+            for (var i = 0; i < animations.Length; i++)
+                if(animations[i] != this) _tweenAnimations.Add(animations[i]);
         }
         public override void Show(float durationDelta = 1, TweenCallback onComplete = null)
         {

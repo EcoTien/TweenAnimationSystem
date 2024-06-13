@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Eco.TweenAnimation
 {
-    public class TweenSequenceAnimation : MonoBehaviour, ITweenAnimation
+    public class TweenSequenceAnimation : TweenAnimationBase
     {
         [TabGroup("Settings Sequence"), SerializeField] 
         private GameObject Base;
@@ -44,12 +45,12 @@ namespace Eco.TweenAnimation
         {
             Base.gameObject.SetActive(false);
             for (var i = 0; i < _showOption.Sequences.Length; i++)
-                _showOption.Sequences[i].TweenAnimation.gameObject.SetActive(false);
+                _showOption.Sequences[i].tweenAnimation.gameObject.SetActive(false);
             for (var i = 0; i < _hideOption.Sequences.Length; i++)
-                _hideOption.Sequences[i].TweenAnimation.gameObject.SetActive(false);
+                _hideOption.Sequences[i].tweenAnimation.gameObject.SetActive(false);
         }
 
-        public void Show(float durationDelta = 1f, TweenCallback onComplete = null)
+        public override void Show(float durationDelta = 1f, TweenCallback onComplete = null)
         {
             gameObject.SetActive(true);
             ResetAnimation();
@@ -57,7 +58,7 @@ namespace Eco.TweenAnimation
                 StartCoroutine(IERunSequence(_showOption, durationDelta, onComplete))));
         }
         
-        public void Hide(float durationDelta = 1f, TweenCallback onComplete = null)
+        public override void Hide(float durationDelta = 1f, TweenCallback onComplete = null)
         {
             gameObject.SetActive(true);
             ResetAnimation();
@@ -81,9 +82,9 @@ namespace Eco.TweenAnimation
             for (int i = 0; i < sequenceOption.Sequences.Length; i++)
             {
                 AnimationSequenceSetting animationSequenceSetting = sequenceOption.Sequences[i];
-                animationSequenceSetting.TweenAnimation.Show(durationDelta, () => complete = true);
+                animationSequenceSetting.tweenAnimation.Show(durationDelta, () => complete = true);
                 yield return new WaitUntil(() => complete);
-                if(_deActivateOnShowComplete) animationSequenceSetting.TweenAnimation.gameObject.SetActive(false);
+                if(_deActivateOnShowComplete) animationSequenceSetting.tweenAnimation.gameObject.SetActive(false);
                 if (animationSequenceSetting.IsShowBase) ToggleBase(true);
                 if(animationSequenceSetting.IsHideBase) ToggleBase(false);
                 complete = false;
@@ -114,7 +115,7 @@ namespace Eco.TweenAnimation
     [System.Serializable]
     public class AnimationSequenceSetting
     {
-        public TweenAnimation TweenAnimation;
+        [FormerlySerializedAs("tweenAnimationBase")] [FormerlySerializedAs("TweenAnimation")] public TweenAnimation tweenAnimation;
         public bool IsShowBase;
         public bool IsHideBase;
     }

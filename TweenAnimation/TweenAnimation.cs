@@ -2,21 +2,22 @@
 using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.ProBuilder.MeshOperations;
 using UnityEngine.UI;
 
 namespace Eco.TweenAnimation
 {
     public enum EAnimation
     {
-        Move, MoveLocal, MoveArchors,
-        Scale, Rotation, Fade,
-        SizeDelta, FillAmount
+        Move = 0, MoveLocal = 1, MoveArchors = 2,
+        Scale = 3, Rotation = 4, Fade = 5,
+        SizeDelta = 6, FillAmount = 7, AnchorMin = 8, AnchorMax = 9
     }
 
     public enum EShow { None, Awake, Enable }
 
     [HideMonoScript]
-    public class TweenAnimation : MonoBehaviour, ITweenAnimation
+    public class TweenAnimation : TweenAnimationBase
     {
         /// <summary>
         /// Animation Setting Group
@@ -58,9 +59,11 @@ namespace Eco.TweenAnimation
         private IAnimation _ianimation;
         private Tweener _tweener;
         private Sequence _sequence;
+        private bool _isShow;
 
         public EAnimation Animation { get => _animation; }
         public bool IsRegisterScreenToggle { get => _registerScreenToggle; }
+        public bool IsShow { get => _isShow; }
         public CanvasGroup CanvasGroup { get => _canvasGroup; }
         public Image Image { get => _image; }
         public BaseOptions BaseOptions { get => _baseOptions; }
@@ -86,9 +89,10 @@ namespace Eco.TweenAnimation
                 Show();
         }
 
-        public void Show(float durationDelta = 1f, TweenCallback onComplete = null)
+        public override void Show(float durationDelta = 1f, TweenCallback onComplete = null)
         {
             CheckAndInitialized();
+            _isShow = true;
             gameObject.SetActive(true);
             if (_baseOptions.LoopTime > 0 || _baseOptions.LoopTime == -1)
             {
@@ -106,10 +110,11 @@ namespace Eco.TweenAnimation
             }
         }
 
-        public void Hide(float durationDelta = 1f, TweenCallback onComplete = null)
+        public override void Hide(float durationDelta = 1f, TweenCallback onComplete = null)
         {
             CheckAndInitialized();
             gameObject.SetActive(true);
+            _isShow = false;
             _tweener = _ianimation.Hide(durationDelta);
             _tweener.onComplete += onComplete;
         }

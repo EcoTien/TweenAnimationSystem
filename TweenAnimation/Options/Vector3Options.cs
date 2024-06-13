@@ -1,5 +1,6 @@
 ﻿using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Eco.TweenAnimation
 {
@@ -7,6 +8,6 @@ namespace Eco.TweenAnimation
     public class Vector3Options
     {
         [FoldoutGroup("Custom Options")] public Vector3 From = Vector3.zero;
-        [FoldoutGroup("Custom Options"), HideInInspector] public Vector3 To = Vector3.one;
+        [FoldoutGroup("Custom Options")] public Vector3 EndTo = Vector3.one * -1;
     }
 }

@@ -30,6 +30,10 @@
                     return CreateObjectAnimation<SizeDeltaAnimation>();
                 case EAnimation.FillAmount:
                     return CreateObjectAnimation<FillAmountAnimation>();
+                case EAnimation.AnchorMax:
+                    return CreateObjectAnimation<AnchorMaxAnimation>();
+                case EAnimation.AnchorMin:
+                    return CreateObjectAnimation<AnchorMinAnimation>();
             }
             return null;
         }
