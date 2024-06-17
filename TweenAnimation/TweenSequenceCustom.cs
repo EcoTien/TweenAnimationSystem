@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using DG.Tweening;
 using Eco.TweenAnimation;
 using Sirenix.OdinInspector;
@@ -11,6 +12,7 @@ namespace Eco.TweenAnimation
     public class TweenSequenceCustom : TweenAnimationBase
     {
         [SerializeField] private EShow _showOnAction;
+        [SerializeField] private bool _ignoreTimeScale;
         [SerializeField] private AnimationCustom[] _showAnimation;
         [SerializeField] private AnimationCustom[] _hideAnimation;
         [SerializeField, HideLabel] private AnimationDebug _debug;
@@ -43,7 +45,7 @@ namespace Eco.TweenAnimation
                             animationCustom.tweenAnimation.gameObject.SetActive(false);
                         onComplete?.Invoke();
                     });
-                }, false);
+                }, _ignoreTimeScale);
             }
         }
 
@@ -57,9 +59,25 @@ namespace Eco.TweenAnimation
                     if(animationCustom.DeActivateOnComplete)
                         onComplete += () => animationCustom.tweenAnimation.gameObject.SetActive(false);
                     animationCustom.tweenAnimation.Hide(durationDelta, onComplete);
-                }, false);
+                }, _ignoreTimeScale);
             }
         }
+
+        /*
+        IEnumerator IEHideTween(float durationDelta = 1, TweenCallback onComplete = null)
+        {
+            foreach (var animationCustom in _hideAnimation)
+            {
+                DOVirtual.DelayedCall(animationCustom.DelayShow, () =>
+                {
+                    animationCustom.tweenAnimation.gameObject.SetActive(true);
+                    if(animationCustom.DeActivateOnComplete) onComplete += () => animationCustom.tweenAnimation.gameObject.SetActive(false);
+                    animationCustom.tweenAnimation.Hide(durationDelta, onComplete);
+                }, false);
+            }
+            yield return new WaitUntil()
+            onComplete?.Invoke();
+        }*/
 
         [System.Serializable]
         public class AnimationCustom
