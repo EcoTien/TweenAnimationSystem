@@ -21,38 +21,31 @@ namespace Eco.TweenAnimation
 
         public Tweener Show(float durationDelta = 1f)
         {
-            if(_customOptions.From > 0) _canvasGroup.blocksRaycasts = true;
             _canvasGroup.alpha = _customOptions.From;
-            
+            CheckAlpha();
             return _canvasGroup
                 .DOFade(_customOptions.To, _options.Duration * durationDelta)
                 .SetEase(_options.ShowEase)
                 .SetUpdate(_options.IgnoreTimeScale)
                 .SetDelay(_options.StartDelay * durationDelta)
-                .OnComplete(OnShowComplete);
-        }
-
-        private void OnShowComplete()
-        {
-            if(_customOptions.To == 0) _canvasGroup.blocksRaycasts = false;
+                .OnComplete(CheckAlpha);
         }
 
         public Tweener Hide(float durationDelta = 1f)
         {
-            if(_customOptions.To > 0) _canvasGroup.blocksRaycasts = true;
             _canvasGroup.alpha = _customOptions.To;
-            
+            CheckAlpha();
             return _canvasGroup
                 .DOFade(_customOptions.From, _options.Duration * durationDelta)
                 .SetEase(_options.ShowEase)
                 .SetUpdate(_options.IgnoreTimeScale)
                 .SetDelay(_options.StartDelay * durationDelta)
-                .OnComplete(OnHideComplete);
+                .OnComplete(CheckAlpha);
         }
         
-        private void OnHideComplete()
+        private void CheckAlpha()
         {
-            if(_customOptions.From == 0) _canvasGroup.blocksRaycasts = false;
+            _canvasGroup.blocksRaycasts = _canvasGroup.alpha > 0;
         }
     }
 }

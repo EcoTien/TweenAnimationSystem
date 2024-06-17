@@ -52,6 +52,7 @@ namespace Eco.TweenAnimation
         public override void Show(float durationDelta = 1f, TweenCallback onComplete = null)
         {
             gameObject.SetActive(true);
+            Base?.gameObject.SetActive(false);
             ResetAnimation();
             StartCoroutine(IEDelaySequence(() =>
                 StartCoroutine(IERunSequence(_showOption, durationDelta, onComplete))));
@@ -81,7 +82,6 @@ namespace Eco.TweenAnimation
             for (int i = 0; i < sequenceOption.Sequences.Length; i++)
             {
                 AnimationSequenceSetting animationSequenceSetting = sequenceOption.Sequences[i];
-                if (animationSequenceSetting.IsShowBase) Base?.SetActive(false);
                 animationSequenceSetting.tweenAnimation.Show(durationDelta, () => complete = true);
                 yield return new WaitUntil(() => complete);
                 if(_deActivateOnShowComplete) animationSequenceSetting.tweenAnimation.gameObject.SetActive(false);
