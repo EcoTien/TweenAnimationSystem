@@ -91,6 +91,7 @@ namespace Eco.TweenAnimation
         public override void Show(float durationDelta = 1f, TweenCallback onComplete = null)
         {
             CheckAndInitialized();
+            KillAnimation();
             _isShow = true;
             gameObject.SetActive(true);
             if (_baseOptions.LoopTime > 0 || _baseOptions.LoopTime == -1)
@@ -118,6 +119,12 @@ namespace Eco.TweenAnimation
             _tweener.onComplete += onComplete;
         }
 
+        private void KillAnimation()
+        {
+            _sequence?.Kill();
+            _tweener?.Kill();
+        }
+        
         private void CheckAndInitialized()
         {
             _ianimation ??= GetFactory().CreateAnimation();
