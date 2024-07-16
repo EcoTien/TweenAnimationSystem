@@ -20,9 +20,14 @@ namespace Eco.TweenAnimation
                 _customOptions.EndTo = _transform.localRotation.eulerAngles;
         }
 
-        public Tweener Show(float durationDelta = 1f)
+        public void SetAnimationFrom()
         {
             _transform.rotation = Quaternion.Euler(_customOptions.From);
+        }
+
+        public Tweener Show(float durationDelta = 1f)
+        {
+            SetAnimationFrom();
             return _transform
                 .DORotate(_customOptions.EndTo, _options.Duration * durationDelta)
                 .SetEase(_options.ShowEase)

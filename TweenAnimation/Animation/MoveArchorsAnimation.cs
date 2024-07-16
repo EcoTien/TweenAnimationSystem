@@ -20,9 +20,14 @@ namespace Eco.TweenAnimation
                 _customOptions.EndTo = _transform.anchoredPosition;
         }
 
-        public Tweener Show(float durationDelta = 1f)
+        public void SetAnimationFrom()
         {
             _transform.anchoredPosition = _customOptions.From;
+        }
+
+        public Tweener Show(float durationDelta = 1f)
+        {
+            SetAnimationFrom();
             return _transform
                 .DOAnchorPos(_customOptions.EndTo, _options.Duration * durationDelta)
                 .SetEase(_options.ShowEase)

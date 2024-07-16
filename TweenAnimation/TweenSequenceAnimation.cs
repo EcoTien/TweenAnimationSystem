@@ -65,8 +65,18 @@ namespace Eco.TweenAnimation
             StartCoroutine(IEDelaySequence(() =>
                 StartCoroutine(IERunSequence(_hideOption, durationDelta, onComplete))));
         }
-        
-        
+
+        public override void Kill()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void Complete()
+        {
+            throw new NotImplementedException();
+        }
+
+
         IEnumerator IEDelaySequence(Action onComplete)
         {
             if (_ignoreTimeScale)

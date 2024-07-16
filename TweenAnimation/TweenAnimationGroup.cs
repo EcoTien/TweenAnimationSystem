@@ -32,5 +32,15 @@ namespace Eco.TweenAnimation
             for (var i = 0; i < _tweenAnimations.Count; i++)
                 _tweenAnimations[i].Hide(durationDelta, onComplete);
         }
+
+        public override void Kill()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void Complete()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

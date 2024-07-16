@@ -19,9 +19,14 @@ namespace Eco.TweenAnimation
             _customOptions.To = _canvasGroup.alpha;
         }
 
-        public Tweener Show(float durationDelta = 1f)
+        public void SetAnimationFrom()
         {
             _canvasGroup.alpha = _customOptions.From;
+        }
+
+        public Tweener Show(float durationDelta = 1f)
+        {
+            SetAnimationFrom();
             CheckAlpha();
             return _canvasGroup
                 .DOFade(_customOptions.To, _options.Duration * durationDelta)

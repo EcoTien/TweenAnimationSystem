@@ -20,9 +20,14 @@ namespace Eco.TweenAnimation
                 _customOptions.EndTo = _transform.sizeDelta;
         }
 
-        public Tweener Show(float durationDelta = 1f)
+        public void SetAnimationFrom()
         {
             _transform.sizeDelta = _customOptions.From;
+        }
+
+        public Tweener Show(float durationDelta = 1f)
+        {
+            SetAnimationFrom();
             return _transform
                 .DOSizeDelta(_customOptions.EndTo, _options.Duration * durationDelta)
                 .SetEase(_options.ShowEase)

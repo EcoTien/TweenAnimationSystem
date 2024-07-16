@@ -20,9 +20,14 @@ namespace Eco.TweenAnimation
             _customOptions.To = _image.fillAmount;
         }
 
-        public Tweener Show(float durationDelta = 1f)
+        public void SetAnimationFrom()
         {
             _image.fillAmount = _customOptions.From;
+        }
+
+        public Tweener Show(float durationDelta = 1f)
+        {
+            SetAnimationFrom();
             return _image
                 .DOFillAmount(_customOptions.To, _options.Duration * durationDelta)
                 .SetEase(_options.ShowEase)

@@ -119,12 +119,22 @@ namespace Eco.TweenAnimation
             _tweener.onComplete += onComplete;
         }
 
-        private void KillAnimation()
+        public override void Kill()
         {
+            CheckAndInitialized();
             _sequence?.Kill();
             _tweener?.Kill();
+            _ianimation?.SetAnimationFrom();
         }
-        
+
+        public override void Complete()
+        {
+            CheckAndInitialized();
+            _sequence?.Kill(true);
+            _tweener?.Complete();
+            _ianimation?.SetAnimationFrom();
+        }
+
         private void CheckAndInitialized()
         {
             _ianimation ??= GetFactory().CreateAnimation();

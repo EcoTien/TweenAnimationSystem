@@ -63,6 +63,16 @@ namespace Eco.TweenAnimation
             }
         }
 
+        public override void Kill()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void Complete()
+        {
+            throw new NotImplementedException();
+        }
+
         /*
         IEnumerator IEHideTween(float durationDelta = 1, TweenCallback onComplete = null)
         {
