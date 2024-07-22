@@ -14,7 +14,7 @@ namespace Eco.TweenAnimation
             AnimationDebug = new AnimationDebug(this);
             TweenAnimationBase[] animations = GetComponents<TweenAnimationBase>();
             for (var i = 0; i < animations.Length; i++)
-                if(animations[i] != this) _tweenAnimations.Add(animations[i]);
+                if(animations[i] != this && animations[i] is not TweenSequenceCustom) _tweenAnimations.Add(animations[i]);
         }
         public override void Show(float durationDelta = 1, TweenCallback onComplete = null)
         {

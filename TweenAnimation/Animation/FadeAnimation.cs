@@ -16,7 +16,8 @@ namespace Eco.TweenAnimation
             _canvasGroup = animationFactory.TweenAnimation.CanvasGroup;
             _options = animationFactory.TweenAnimation.BaseOptions;
             _customOptions = animationFactory.TweenAnimation.CanvasGroupOptions;
-            _customOptions.To = _canvasGroup.alpha;
+            if(_customOptions.EndTo == -1)
+                _customOptions.EndTo = _canvasGroup.alpha;
         }
 
         public void SetAnimationFrom()
@@ -29,7 +30,7 @@ namespace Eco.TweenAnimation
             SetAnimationFrom();
             CheckAlpha();
             return _canvasGroup
-                .DOFade(_customOptions.To, _options.Duration * durationDelta)
+                .DOFade(_customOptions.EndTo, _options.Duration * durationDelta)
                 .SetEase(_options.ShowEase)
                 .SetUpdate(_options.IgnoreTimeScale)
                 .SetDelay(_options.StartDelay * durationDelta)
@@ -38,7 +39,7 @@ namespace Eco.TweenAnimation
 
         public Tweener Hide(float durationDelta = 1f)
         {
-            _canvasGroup.alpha = _customOptions.To;
+            _canvasGroup.alpha = _customOptions.EndTo;
             CheckAlpha();
             return _canvasGroup
                 .DOFade(_customOptions.From, _options.Duration * durationDelta)
