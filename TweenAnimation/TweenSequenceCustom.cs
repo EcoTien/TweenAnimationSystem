@@ -13,6 +13,7 @@ namespace Eco.TweenAnimation
     {
         [SerializeField] private EShow _showOnAction;
         [SerializeField] private bool _ignoreTimeScale;
+        [SerializeField] private bool _deActivateOnShow = true;
         [SerializeField] private AnimationCustom[] _showAnimation;
         [SerializeField] private AnimationCustom[] _hideAnimation;
         [SerializeField, HideLabel] private AnimationDebug _debug;
@@ -35,7 +36,7 @@ namespace Eco.TweenAnimation
             gameObject.SetActive(true);
             foreach (var animationCustom in _showAnimation)
             {
-                animationCustom.tweenAnimation.gameObject.SetActive(false);
+                if(_deActivateOnShow) animationCustom.tweenAnimation.gameObject.SetActive(false);
                 DOVirtual.DelayedCall(animationCustom.DelayShow, () =>
                 {
                     animationCustom.tweenAnimation.gameObject.SetActive(true);
