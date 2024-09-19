@@ -17,7 +17,9 @@ namespace Eco.TweenAnimation
             _image = animationFactory.TweenAnimation.Image;
             _options = _factory.TweenAnimation.BaseOptions;
             _customOptions = _factory.TweenAnimation.FloatOptions;
-            _customOptions.To = _image.fillAmount;
+            if(_customOptions.EndTo == -1)
+                _customOptions.EndTo = _image.fillAmount;
+            
         }
 
         public void SetAnimationFrom()
@@ -29,7 +31,7 @@ namespace Eco.TweenAnimation
         {
             SetAnimationFrom();
             return _image
-                .DOFillAmount(_customOptions.To, _options.Duration * durationDelta)
+                .DOFillAmount(_customOptions.EndTo, _options.Duration * durationDelta)
                 .SetEase(_options.ShowEase)
                 .SetUpdate(_options.IgnoreTimeScale)
                 .SetDelay(_options.StartDelay * durationDelta);
@@ -37,7 +39,7 @@ namespace Eco.TweenAnimation
 
         public Tweener Hide(float durationDelta = 1f)
         {
-            _image.fillAmount = _customOptions.To;
+            _image.fillAmount = _customOptions.EndTo;
             return _image
                 .DOFillAmount(_customOptions.From, _options.Duration * durationDelta)
                 .SetEase(_options.HideEase)
