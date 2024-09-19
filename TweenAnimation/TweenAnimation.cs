@@ -161,12 +161,17 @@ namespace Eco.TweenAnimation
 
         private bool IsVector3Option()
         {
-            return _animation != EAnimation.Fade && !IsFloatOption();
+            return _animation != EAnimation.Fade && !IsColorOption() && !IsFloatOption();
         }
 
         private bool IsFloatOption()
         {
-            return _animation == EAnimation.FillAmount;
+            return _animation == EAnimation.FillAmount && !IsColorOption();
+        }
+        
+        private bool IsColorOption()
+        {
+            return _animation == EAnimation.SpriteColor;
         }
 
         private bool IsImageAnimation()
@@ -176,7 +181,7 @@ namespace Eco.TweenAnimation
 
         private bool IsSpriteAnimation()
         {
-            return _animation == EAnimation.SpriteColor;
+            return _animation == EAnimation.SpriteColor || _animation == EAnimation.SpriteFade;
         }
 
         public bool IsRunning()

@@ -34,7 +34,7 @@ namespace Eco.TweenAnimation
         {
             SetAnimationFrom();
             return _spriteRenderer
-                .DOFade(_customOptions.To, _options.Duration * durationDelta)
+                .DOFade(_customOptions.EndTo, _options.Duration * durationDelta)
                 .SetEase(_options.ShowEase)
                 .SetUpdate(_options.IgnoreTimeScale)
                 .SetDelay(_options.StartDelay * durationDelta);
@@ -42,7 +42,7 @@ namespace Eco.TweenAnimation
 
         public Tweener Hide(float durationDelta = 1f)
         {
-            _spriteRenderer.color = GetSpriteA(_customOptions.To);
+            _spriteRenderer.color = GetSpriteA(_customOptions.EndTo);
             return _spriteRenderer
                 .DOFade(_customOptions.From, _options.Duration * durationDelta)
                 .SetEase(_options.ShowEase)
