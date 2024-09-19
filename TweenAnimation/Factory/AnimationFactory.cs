@@ -34,6 +34,10 @@
                     return CreateObjectAnimation<AnchorMaxAnimation>();
                 case EAnimation.AnchorMin:
                     return CreateObjectAnimation<AnchorMinAnimation>();
+                case EAnimation.SpriteColor:
+                    return CreateObjectAnimation<SpriteColorAnimation>();
+                case EAnimation.SpriteFade:
+                    return CreateObjectAnimation<SpriteFadeAnimation>();
             }
             return null;
         }

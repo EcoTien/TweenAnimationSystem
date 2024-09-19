@@ -9,8 +9,8 @@ namespace Eco.TweenAnimation
     public enum EAnimation
     {
         Move = 0, MoveLocal = 1, MoveArchors = 2,
-        Scale = 3, Rotation = 4, Fade = 5,
-        SizeDelta = 6, FillAmount = 7, AnchorMin = 8, AnchorMax = 9
+        Scale = 3, Rotation = 4, Fade = 5, SpriteFade = 11,
+        SizeDelta = 6, FillAmount = 7, AnchorMin = 8, AnchorMax = 9, SpriteColor = 10,
     }
 
     public enum EShow { None, Awake, Enable }
@@ -35,6 +35,9 @@ namespace Eco.TweenAnimation
 
         [SerializeField, LabelText("Canvas Group"), TabGroup("Animation Setting"), ShowIf("IsImageAnimation")]
         private Image _image;
+        
+        [SerializeField, LabelText("Sprite renderer"), TabGroup("Animation Setting"), ShowIf("IsSpriteAnimation")]
+        private SpriteRenderer _spriteRenderer;
 
         [SerializeField, HideLabel, TabGroup("Animation Setting")]
         private BaseOptions _baseOptions;
@@ -44,6 +47,9 @@ namespace Eco.TweenAnimation
 
         [SerializeField, HideLabel, TabGroup("Animation Setting"), ShowIf("IsFadeAnimation")]
         private CanvasGroupOptions _canvasGroupOptions;
+        
+        [SerializeField, HideLabel, TabGroup("Animation Setting"), ShowIf("IsSpriteAnimation")]
+        private ColorOptions _colorOptions;
 
         [SerializeField, HideLabel, TabGroup("Animation Setting"), ShowIf("IsFloatOption")]
         private FloatOptions _floatOptions;
@@ -64,10 +70,12 @@ namespace Eco.TweenAnimation
         public bool IsRegisterScreenToggle { get => _registerScreenToggle; }
         public bool IsShow { get => _isShow; }
         public CanvasGroup CanvasGroup { get => _canvasGroup; }
+        public SpriteRenderer SpriteRenderer { get => _spriteRenderer; }
         public Image Image { get => _image; }
         public BaseOptions BaseOptions { get => _baseOptions; }
         public Vector3Options Vector3Options { get => _vector3Options; }
         public CanvasGroupOptions CanvasGroupOptions { get => _canvasGroupOptions; }
+        public ColorOptions ColorOptions { get => _colorOptions; }
         public FloatOptions FloatOptions { get => _floatOptions; }
 
         [OnInspectorInit]
@@ -165,6 +173,11 @@ namespace Eco.TweenAnimation
             return _animation == EAnimation.FillAmount;
         }
 
+        private bool IsSpriteAnimation()
+        {
+            return _animation == EAnimation.SpriteColor;
+        }
+
         public bool IsRunning()
         {
             return (_tweener != null && _tweener.IsPlaying()) || (_sequence != null && _sequence.IsPlaying());
@@ -195,6 +208,12 @@ namespace Eco.TweenAnimation
             {
                 if (!TryGetComponent(out _image))
                     _image = gameObject.AddComponent<Image>();
+            }
+            
+            if (IsSpriteAnimation() && _spriteRenderer == null)
+            {
+                if (!TryGetComponent(out _spriteRenderer))
+                    _spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
             }
         }
 #endif
