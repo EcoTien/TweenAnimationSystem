@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -108,6 +109,7 @@ namespace Eco.TweenAnimation
                 _sequence.Append(_ianimation.Show(durationDelta));
                 _sequence.AppendInterval(_baseOptions.DelayPerOneTimeLoop);
                 _sequence.SetLoops(_baseOptions.LoopTime, _baseOptions.LoopType);
+                _sequence.SetUpdate(_baseOptions.IgnoreTimeScale);
                 _sequence.OnComplete(onComplete);
                 _sequence.Play();
             }
