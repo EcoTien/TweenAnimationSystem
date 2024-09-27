@@ -49,7 +49,7 @@ namespace Eco.TweenAnimation
         [SerializeField, HideLabel, TabGroup("Animation Setting"), ShowIf("IsFadeAnimation")]
         private CanvasGroupOptions _canvasGroupOptions;
         
-        [SerializeField, HideLabel, TabGroup("Animation Setting"), ShowIf("IsSpriteAnimation")]
+        [SerializeField, HideLabel, TabGroup("Animation Setting"), ShowIf("IsColorOption")]
         private ColorOptions _colorOptions;
 
         [SerializeField, HideLabel, TabGroup("Animation Setting"), ShowIf("IsFloatOption")]
@@ -168,7 +168,7 @@ namespace Eco.TweenAnimation
 
         private bool IsFloatOption()
         {
-            return _animation == EAnimation.FillAmount && !IsColorOption();
+            return _animation == EAnimation.FillAmount || _animation == EAnimation.SpriteFade && !IsColorOption();
         }
         
         private bool IsColorOption()
