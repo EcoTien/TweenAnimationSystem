@@ -25,7 +25,7 @@ namespace Eco.TweenAnimation
     
         private void Awake()
         {
-            _tweenAnimations = GetComponentsInChildren<TweenAnimation>();
+            _tweenAnimations = GetComponentsInChildren<TweenAnimation>(true);
             this.RegisterScreenToggle();
         }
     
@@ -41,15 +41,10 @@ namespace Eco.TweenAnimation
                 if(!tweenAnimation.IsRegisterScreenToggle)
                     continue;
                 
-                if (isEnable)
-                {
-                    Debug.Log("Tween Animation....");
-                    tweenAnimation?.Show(durationDelta);
-                }
-                else
-                {
-                    tweenAnimation?.Hide(durationDelta);
-                }
+                if (isEnable && !tweenAnimation.IsShow)
+                    tweenAnimation.Show(durationDelta);
+                else if(!isEnable && tweenAnimation.IsShow)
+                    tweenAnimation.Hide(durationDelta);
             }
         }
     }
