@@ -13,7 +13,6 @@ namespace Eco.TweenAnimation
     {
         [SerializeField] private EShow _showOnAction;
         [SerializeField] private bool _ignoreTimeScale;
-        [SerializeField] private bool _deActivateOnShow = true;
         [SerializeField] private AnimationCustom[] _showAnimation;
         [SerializeField] private AnimationCustom[] _hideAnimation;
         [SerializeField, HideLabel] private AnimationDebug _debug;
@@ -31,64 +30,73 @@ namespace Eco.TweenAnimation
                 Show();
         }
 
-        public override void Show(float durationDelta = 1, TweenCallback onComplete = null)
+        public override void Show(TweenCallback onComplete = null)
         {
             gameObject.SetActive(true);
+            OnShowComplete = onComplete;
+            
+            AnimationCustom animationCustomLast = null;
             foreach (var animationCustom in _showAnimation)
             {
-                if(_deActivateOnShow) animationCustom.tweenAnimation.gameObject.SetActive(false);
+                if (animationCustomLast == null || animationCustom.DelayShow > animationCustomLast.DelayShow)
+                    animationCustomLast = animationCustom;
+                
+                animationCustom.tweenAnimation.gameObject.SetActive(false);
                 DOVirtual.DelayedCall(animationCustom.DelayShow, () =>
                 {
                     animationCustom.tweenAnimation.gameObject.SetActive(true);
-                    animationCustom.tweenAnimation.Show(durationDelta, () =>
+                    animationCustom.tweenAnimation.Show(() =>
                     {
                         if (animationCustom.DeActivateOnComplete)
                             animationCustom.tweenAnimation.gameObject.SetActive(false);
-                        onComplete?.Invoke();
+                        if (animationCustom == animationCustomLast) CallBack_OnShowComplete();
                     });
                 }, _ignoreTimeScale);
             }
         }
 
-        public override void Hide(float durationDelta = 1, TweenCallback onComplete = null)
+        public override void Hide(TweenCallback onComplete = null)
         {
+            OnHideComplete = onComplete;
+            
+            AnimationCustom animationCustomLast = null;
             foreach (var animationCustom in _hideAnimation)
             {
+                if (animationCustomLast == null || animationCustom.DelayShow > animationCustomLast.DelayShow)
+                    animationCustomLast = animationCustom;
+                
                 DOVirtual.DelayedCall(animationCustom.DelayShow, () =>
                 {
                     animationCustom.tweenAnimation.gameObject.SetActive(true);
-                    if(animationCustom.DeActivateOnComplete)
-                        onComplete += () => animationCustom.tweenAnimation.gameObject.SetActive(false);
-                    animationCustom.tweenAnimation.Hide(durationDelta, onComplete);
+                    animationCustom.tweenAnimation.Hide(() =>
+                    {
+                        if (animationCustom.DeActivateOnComplete)
+                            animationCustom.tweenAnimation.gameObject.SetActive(false);
+                        if (animationCustom == animationCustomLast) CallBack_OnHideComplete();
+                    });
                 }, _ignoreTimeScale);
             }
+        }
+        
+        private void CallBack_OnShowComplete()
+        {
+            OnShowComplete?.Invoke();
+        }
+        
+        private void CallBack_OnHideComplete()
+        {
+            OnHideComplete?.Invoke();
         }
 
         public override void Kill()
         {
-            throw new NotImplementedException();
+            
         }
 
         public override void Complete()
         {
-            throw new NotImplementedException();
+            
         }
-
-        /*
-        IEnumerator IEHideTween(float durationDelta = 1, TweenCallback onComplete = null)
-        {
-            foreach (var animationCustom in _hideAnimation)
-            {
-                DOVirtual.DelayedCall(animationCustom.DelayShow, () =>
-                {
-                    animationCustom.tweenAnimation.gameObject.SetActive(true);
-                    if(animationCustom.DeActivateOnComplete) onComplete += () => animationCustom.tweenAnimation.gameObject.SetActive(false);
-                    animationCustom.tweenAnimation.Hide(durationDelta, onComplete);
-                }, false);
-            }
-            yield return new WaitUntil()
-            onComplete?.Invoke();
-        }*/
 
         [System.Serializable]
         public class AnimationCustom

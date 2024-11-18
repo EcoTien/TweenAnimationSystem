@@ -8,6 +8,7 @@ using UnityEngine.Serialization;
 
 namespace Eco.TweenAnimation
 {
+    [Obsolete]
     public class TweenSequenceAnimation : TweenAnimationBase
     {
         [TabGroup("Settings Sequence"), SerializeField] 
@@ -49,21 +50,21 @@ namespace Eco.TweenAnimation
                 _hideOption.Sequences[i].tweenAnimation.gameObject.SetActive(false);
         }
 
-        public override void Show(float durationDelta = 1f, TweenCallback onComplete = null)
+        public override void Show(TweenCallback onComplete = null)
         {
             gameObject.SetActive(true);
             Base?.gameObject.SetActive(false);
             ResetAnimation();
             StartCoroutine(IEDelaySequence(() =>
-                StartCoroutine(IERunSequence(_showOption, durationDelta, onComplete))));
+                StartCoroutine(IERunSequence(_showOption, onComplete))));
         }
         
-        public override void Hide(float durationDelta = 1f, TweenCallback onComplete = null)
+        public override void Hide(TweenCallback onComplete = null)
         {
             gameObject.SetActive(true);
             ResetAnimation();
             StartCoroutine(IEDelaySequence(() =>
-                StartCoroutine(IERunSequence(_hideOption, durationDelta, onComplete))));
+                StartCoroutine(IERunSequence(_hideOption, onComplete))));
         }
 
         public override void Kill()
@@ -86,13 +87,13 @@ namespace Eco.TweenAnimation
             onComplete.Invoke();
         }
         
-        IEnumerator IERunSequence(SequenceOption sequenceOption, float durationDelta = 1f, TweenCallback onComplete = null)
+        IEnumerator IERunSequence(SequenceOption sequenceOption, TweenCallback onComplete = null)
         {
             bool complete = false;
             for (int i = 0; i < sequenceOption.Sequences.Length; i++)
             {
                 AnimationSequenceSetting animationSequenceSetting = sequenceOption.Sequences[i];
-                animationSequenceSetting.tweenAnimation.Show(durationDelta, () => complete = true);
+                animationSequenceSetting.tweenAnimation.Show(() => complete = true);
                 yield return new WaitUntil(() => complete);
                 if(_deActivateOnShowComplete) animationSequenceSetting.tweenAnimation.gameObject.SetActive(false);
                 if (animationSequenceSetting.IsShowBase) ToggleBase(true);

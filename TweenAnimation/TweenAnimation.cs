@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -10,8 +9,8 @@ namespace Eco.TweenAnimation
     public enum EAnimation
     {
         Move = 0, MoveLocal = 1, MoveArchors = 2,
-        Scale = 3, Rotation = 4, Fade = 5, SpriteFade = 11,
-        SizeDelta = 6, FillAmount = 7, AnchorMin = 8, AnchorMax = 9, SpriteColor = 10,
+        Scale = 3, Rotation = 4, Fade = 5,
+        SizeDelta = 6, FillAmount = 7, AnchorMin = 8, AnchorMax = 9
     }
 
     public enum EShow { None, Awake, Enable }
@@ -36,9 +35,6 @@ namespace Eco.TweenAnimation
 
         [SerializeField, LabelText("Canvas Group"), TabGroup("Animation Setting"), ShowIf("IsImageAnimation")]
         private Image _image;
-        
-        [SerializeField, LabelText("Sprite renderer"), TabGroup("Animation Setting"), ShowIf("IsSpriteAnimation")]
-        private SpriteRenderer _spriteRenderer;
 
         [SerializeField, HideLabel, TabGroup("Animation Setting")]
         private BaseOptions _baseOptions;
@@ -48,9 +44,6 @@ namespace Eco.TweenAnimation
 
         [SerializeField, HideLabel, TabGroup("Animation Setting"), ShowIf("IsFadeAnimation")]
         private CanvasGroupOptions _canvasGroupOptions;
-        
-        [SerializeField, HideLabel, TabGroup("Animation Setting"), ShowIf("IsColorOption")]
-        private ColorOptions _colorOptions;
 
         [SerializeField, HideLabel, TabGroup("Animation Setting"), ShowIf("IsFloatOption")]
         private FloatOptions _floatOptions;
@@ -71,12 +64,10 @@ namespace Eco.TweenAnimation
         public bool IsRegisterScreenToggle { get => _registerScreenToggle; }
         public bool IsShow { get => _isShow; }
         public CanvasGroup CanvasGroup { get => _canvasGroup; }
-        public SpriteRenderer SpriteRenderer { get => _spriteRenderer; }
         public Image Image { get => _image; }
         public BaseOptions BaseOptions { get => _baseOptions; }
         public Vector3Options Vector3Options { get => _vector3Options; }
         public CanvasGroupOptions CanvasGroupOptions { get => _canvasGroupOptions; }
-        public ColorOptions ColorOptions { get => _colorOptions; }
         public FloatOptions FloatOptions { get => _floatOptions; }
 
         [OnInspectorInit]
@@ -97,39 +88,36 @@ namespace Eco.TweenAnimation
                 Show();
         }
 
-        public override void Show(float durationDelta = 1f, TweenCallback onComplete = null)
+        public override void Show(TweenCallback onComplete = null)
         {
-            CheckAndInitialized();
             Kill();
             _isShow = true;
             gameObject.SetActive(true);
+            OnShowComplete = onComplete;
             if (_baseOptions.LoopTime > 0 || _baseOptions.LoopTime == -1)
             {
-                DOVirtual.DelayedCall(_baseOptions.StartDelay, () =>
-                {
-                    _sequence = DOTween.Sequence();
-                    _sequence.Append(_ianimation.Show(durationDelta).SetDelay(0));
-                    _sequence.AppendInterval(_baseOptions.DelayPerOneTimeLoop);
-                    _sequence.SetLoops(_baseOptions.LoopTime, _baseOptions.LoopType);
-                    _sequence.SetUpdate(_baseOptions.IgnoreTimeScale);
-                    _sequence.OnComplete(onComplete);
-                    _sequence.Play();
-                }, _baseOptions.IgnoreTimeScale);
+                _sequence = DOTween.Sequence();
+                _sequence.Append(_ianimation.Show());
+                _sequence.AppendInterval(_baseOptions.DelayPerOneTimeLoop);
+                _sequence.SetLoops(_baseOptions.LoopTime, _baseOptions.LoopType);
+                _sequence.OnComplete(CallBackShowComplete);
+                _sequence.Play();
             }
             else
             {
-                _tweener = _ianimation.Show(durationDelta);
-                _tweener.onComplete += onComplete;
+                _tweener = _ianimation.Show();
+                _tweener.onComplete += CallBackShowComplete;
             }
         }
 
-        public override void Hide(float durationDelta = 1f, TweenCallback onComplete = null)
+        public override void Hide(TweenCallback onComplete = null)
         {
             CheckAndInitialized();
             gameObject.SetActive(true);
+            OnHideComplete = onComplete;
             _isShow = false;
-            _tweener = _ianimation.Hide(durationDelta);
-            _tweener.onComplete += onComplete;
+            _tweener = _ianimation.Hide();
+            _tweener.onComplete += CallBackHideComplete;
         }
 
         public override void Kill()
@@ -146,6 +134,16 @@ namespace Eco.TweenAnimation
             _sequence?.Kill(true);
             _tweener?.Complete();
             _ianimation?.SetAnimationFrom();
+        }
+
+        private void CallBackShowComplete()
+        {
+            OnShowComplete?.Invoke();
+        }
+        
+        private void CallBackHideComplete()
+        {
+            OnHideComplete?.Invoke();
         }
 
         private void CheckAndInitialized()
@@ -166,32 +164,17 @@ namespace Eco.TweenAnimation
 
         private bool IsVector3Option()
         {
-            return _animation != EAnimation.Fade && !IsColorOption() && !IsFloatOption();
+            return _animation != EAnimation.Fade && !IsFloatOption();
         }
 
         private bool IsFloatOption()
         {
-            return _animation == EAnimation.FillAmount || _animation == EAnimation.SpriteFade && !IsColorOption();
-        }
-        
-        private bool IsColorOption()
-        {
-            return _animation == EAnimation.SpriteColor;
+            return _animation == EAnimation.FillAmount;
         }
 
         private bool IsImageAnimation()
         {
             return _animation == EAnimation.FillAmount;
-        }
-
-        private bool IsSpriteAnimation()
-        {
-            return _animation == EAnimation.SpriteColor || _animation == EAnimation.SpriteFade;
-        }
-
-        public bool IsRunning()
-        {
-            return (_tweener != null && _tweener.IsPlaying()) || (_sequence != null && _sequence.IsPlaying());
         }
 
         private void OnDestroy()
@@ -219,12 +202,6 @@ namespace Eco.TweenAnimation
             {
                 if (!TryGetComponent(out _image))
                     _image = gameObject.AddComponent<Image>();
-            }
-            
-            if (IsSpriteAnimation() && _spriteRenderer == null)
-            {
-                if (!TryGetComponent(out _spriteRenderer))
-                    _spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
             }
         }
 #endif

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using DG.Tweening;
 using Sirenix.OdinInspector;
+using UnityEngine;
 
 namespace Eco.TweenAnimation
 {
@@ -14,30 +15,71 @@ namespace Eco.TweenAnimation
             AnimationDebug = new AnimationDebug(this);
             TweenAnimationBase[] animations = GetComponents<TweenAnimationBase>();
             for (var i = 0; i < animations.Length; i++)
-                if(animations[i] != this && animations[i] is not TweenSequenceCustom) _tweenAnimations.Add(animations[i]);
+            {
+                TweenAnimationBase tweenAnimationBase = animations[i];
+                if(tweenAnimationBase == this) continue;
+                _tweenAnimations.Add(tweenAnimationBase);
+            }
         }
-        public override void Show(float durationDelta = 1, TweenCallback onComplete = null)
+        
+        public override void Show(TweenCallback onComplete = null)
         {
             gameObject.SetActive(true);
+            OnShowComplete = onComplete;
+            
+            TweenAnimation lastTweenAnimation = null;
             for (var i = 0; i < _tweenAnimations.Count; i++)
-                _tweenAnimations[i].Show(durationDelta, onComplete);
+            {
+                TweenAnimationBase tweenAnimationBase = _tweenAnimations[i];
+                if (tweenAnimationBase is TweenAnimation tweenAnimation)
+                {
+                    float totalTime = tweenAnimation.BaseOptions.StartDelay + tweenAnimation.BaseOptions.Duration;
+                    if (lastTweenAnimation == null || totalTime > lastTweenAnimation.BaseOptions.StartDelay + lastTweenAnimation.BaseOptions.Duration)
+                        lastTweenAnimation = tweenAnimation;
+                }
+                tweenAnimationBase.Show();
+            }
+            lastTweenAnimation.OnShowComplete = CallBack_OnShowComplete;
         }
 
-        public override void Hide(float durationDelta = 1, TweenCallback onComplete = null)
+        public override void Hide(TweenCallback onComplete = null)
         {
             gameObject.SetActive(true);
+            OnHideComplete = onComplete;
+            
+            TweenAnimation lastTweenAnimation = null;
             for (var i = 0; i < _tweenAnimations.Count; i++)
-                _tweenAnimations[i].Hide(durationDelta, onComplete);
+            {
+                TweenAnimationBase tweenAnimationBase = _tweenAnimations[i];
+                if (tweenAnimationBase is TweenAnimation tweenAnimation)
+                {
+                    float totalTime = tweenAnimation.BaseOptions.StartDelay + tweenAnimation.BaseOptions.Duration;
+                    if (lastTweenAnimation == null || totalTime > lastTweenAnimation.BaseOptions.StartDelay + lastTweenAnimation.BaseOptions.Duration)
+                        lastTweenAnimation = tweenAnimation;
+                }
+                tweenAnimationBase.Hide();
+            }
+            lastTweenAnimation.OnHideComplete = CallBack_OnHideComplete;
+        }
+
+        private void CallBack_OnShowComplete()
+        {
+            OnShowComplete?.Invoke();
+        }
+        
+        private void CallBack_OnHideComplete()
+        {
+            OnHideComplete?.Invoke();
         }
 
         public override void Kill()
         {
-            throw new System.NotImplementedException();
+            
         }
 
         public override void Complete()
         {
-            throw new System.NotImplementedException();
+            
         }
     }
 }

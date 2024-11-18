@@ -16,8 +16,7 @@ namespace Eco.TweenAnimation
             _canvasGroup = animationFactory.TweenAnimation.CanvasGroup;
             _options = animationFactory.TweenAnimation.BaseOptions;
             _customOptions = animationFactory.TweenAnimation.CanvasGroupOptions;
-            if(_customOptions.EndTo == -1)
-                _customOptions.EndTo = _canvasGroup.alpha;
+            _customOptions.To = _canvasGroup.alpha;
         }
 
         public void SetAnimationFrom()
@@ -25,27 +24,27 @@ namespace Eco.TweenAnimation
             _canvasGroup.alpha = _customOptions.From;
         }
 
-        public Tweener Show(float durationDelta = 1f)
+        public Tweener Show()
         {
             SetAnimationFrom();
             CheckAlpha();
             return _canvasGroup
-                .DOFade(_customOptions.EndTo, _options.Duration * durationDelta)
+                .DOFade(_customOptions.To, _options.Duration)
                 .SetEase(_options.ShowEase)
                 .SetUpdate(_options.IgnoreTimeScale)
-                .SetDelay(_options.StartDelay * durationDelta)
+                .SetDelay(_options.StartDelay)
                 .OnComplete(CheckAlpha);
         }
 
-        public Tweener Hide(float durationDelta = 1f)
+        public Tweener Hide()
         {
-            _canvasGroup.alpha = _customOptions.EndTo;
+            _canvasGroup.alpha = _customOptions.To;
             CheckAlpha();
             return _canvasGroup
-                .DOFade(_customOptions.From, _options.Duration * durationDelta)
+                .DOFade(_customOptions.From, _options.Duration)
                 .SetEase(_options.ShowEase)
                 .SetUpdate(_options.IgnoreTimeScale)
-                .SetDelay(_options.StartDelay * durationDelta)
+                .SetDelay(_options.StartDelay)
                 .OnComplete(CheckAlpha);
         }
         

@@ -25,24 +25,24 @@ namespace Eco.TweenAnimation
             _transform.localScale = _customOptions.From;
         }
 
-        public Tweener Show(float durationDelta = 1f)
+        public Tweener Show()
         {
             SetAnimationFrom();
             return _transform
-                .DOScale(_customOptions.EndTo, _options.Duration * durationDelta)
+                .DOScale(_customOptions.EndTo, _options.Duration)
                 .SetEase(_options.ShowEase)
                 .SetUpdate(_options.IgnoreTimeScale)
-                .SetDelay(_options.StartDelay * durationDelta);
+                .SetDelay(_options.StartDelay);
         }
 
-        public Tweener Hide(float durationDelta = 1f)
+        public Tweener Hide()
         {
             _transform.localScale = _customOptions.EndTo;
             return _transform
-                .DOScale(_customOptions.From, _options.Duration * durationDelta)
+                .DOScale(_customOptions.From, _options.Duration)
                 .SetEase(_options.HideEase)
                 .SetUpdate(_options.IgnoreTimeScale)
-                .SetDelay(_options.StartDelay * durationDelta);
+                .SetDelay(_options.StartDelay);
         }
     }
 }
