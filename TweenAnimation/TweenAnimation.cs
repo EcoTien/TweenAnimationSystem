@@ -96,12 +96,16 @@ namespace Eco.TweenAnimation
             OnShowComplete = onComplete;
             if (_baseOptions.LoopTime > 0 || _baseOptions.LoopTime == -1)
             {
-                _sequence = DOTween.Sequence();
-                _sequence.Append(_ianimation.Show());
-                _sequence.AppendInterval(_baseOptions.DelayPerOneTimeLoop);
-                _sequence.SetLoops(_baseOptions.LoopTime, _baseOptions.LoopType);
-                _sequence.OnComplete(CallBackShowComplete);
-                _sequence.Play();
+                DOVirtual.DelayedCall(_baseOptions.StartDelay, () =>
+                {
+                    _sequence = DOTween.Sequence();
+                    _sequence.Append(_ianimation.Show().SetDelay(0));
+                    _sequence.AppendInterval(_baseOptions.DelayPerOneTimeLoop);
+                    _sequence.SetLoops(_baseOptions.LoopTime, _baseOptions.LoopType);
+                    _sequence.SetUpdate(_baseOptions.IgnoreTimeScale);
+                    _sequence.OnComplete(onComplete);
+                    _sequence.Play();
+                }, _baseOptions.IgnoreTimeScale);
             }
             else
             {
