@@ -1,5 +1,6 @@
 ﻿using System;
 using DG.Tweening;
+using EcoMine.Common;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,7 +11,8 @@ namespace Eco.TweenAnimation
     {
         Move = 0, MoveLocal = 1, MoveArchors = 2,
         Scale = 3, Rotation = 4, Fade = 5,
-        SizeDelta = 6, FillAmount = 7, AnchorMin = 8, AnchorMax = 9
+        SizeDelta = 6, FillAmount = 7, AnchorMin = 8, AnchorMax = 9,
+        SpriteColor = 10, SpriteFade = 11, CameraSize = 12,
     }
 
     public enum EShow { None, Awake, Enable }
@@ -29,12 +31,21 @@ namespace Eco.TweenAnimation
 
         [SerializeField, LabelText("Register In Screen Toggle"), TabGroup("Animation Setting")]
         private bool _registerScreenToggle = true;
-
+        
         [SerializeField, LabelText("Canvas Group"), TabGroup("Animation Setting"), ShowIf("IsFadeAnimation")]
         private CanvasGroup _canvasGroup;
 
-        [SerializeField, LabelText("Canvas Group"), TabGroup("Animation Setting"), ShowIf("IsImageAnimation")]
+        [SerializeField, LabelText("Image"), TabGroup("Animation Setting"), ShowIf("IsImageAnimation")]
         private Image _image;
+        
+        [SerializeField, LabelText("Sprite Renderer"), TabGroup("Animation Setting"), ShowIf("IsSpriteAnimation")]
+        private SpriteRenderer _spriteRenderer;
+        
+        [SerializeField, LabelText("Sprite Group"), TabGroup("Animation Setting"), ShowIf("IsSpriteFade")]
+        private SpriteGroup _spriteGroup;
+        
+        [SerializeField, LabelText("Camera Group"), TabGroup("Animation Setting"), ShowIf("IsCameraAnimation")]
+        private Camera _camera;
 
         [SerializeField, HideLabel, TabGroup("Animation Setting")]
         private BaseOptions _baseOptions;
@@ -44,6 +55,9 @@ namespace Eco.TweenAnimation
 
         [SerializeField, HideLabel, TabGroup("Animation Setting"), ShowIf("IsFadeAnimation")]
         private CanvasGroupOptions _canvasGroupOptions;
+        
+        [SerializeField, HideLabel, TabGroup("Animation Setting"), ShowIf("IsColorOption")]
+        private ColorOptions _colorOptions;
 
         [SerializeField, HideLabel, TabGroup("Animation Setting"), ShowIf("IsFloatOption")]
         private FloatOptions _floatOptions;
@@ -64,10 +78,14 @@ namespace Eco.TweenAnimation
         public bool IsRegisterScreenToggle { get => _registerScreenToggle; }
         public bool IsShow { get => _isShow; }
         public CanvasGroup CanvasGroup { get => _canvasGroup; }
+        public SpriteRenderer SpriteRenderer { get => _spriteRenderer; }
+        public Camera Camera { get => _camera; }
+        public SpriteGroup SpriteGroup { get => _spriteGroup; }
         public Image Image { get => _image; }
         public BaseOptions BaseOptions { get => _baseOptions; }
         public Vector3Options Vector3Options { get => _vector3Options; }
         public CanvasGroupOptions CanvasGroupOptions { get => _canvasGroupOptions; }
+        public ColorOptions ColorOptions { get => _colorOptions; }
         public FloatOptions FloatOptions { get => _floatOptions; }
 
         [OnInspectorInit]
@@ -103,7 +121,7 @@ namespace Eco.TweenAnimation
                     _sequence.AppendInterval(_baseOptions.DelayPerOneTimeLoop);
                     _sequence.SetLoops(_baseOptions.LoopTime, _baseOptions.LoopType);
                     _sequence.SetUpdate(_baseOptions.IgnoreTimeScale);
-                    _sequence.OnComplete(onComplete);
+                    _sequence.OnComplete(OnShowComplete);
                     _sequence.Play();
                 }, _baseOptions.IgnoreTimeScale);
             }
@@ -168,17 +186,37 @@ namespace Eco.TweenAnimation
 
         private bool IsVector3Option()
         {
-            return _animation != EAnimation.Fade && !IsFloatOption();
+            return _animation != EAnimation.Fade && !IsFloatOption() && !IsColorOption();
+        }
+        
+        private bool IsColorOption()
+        {
+            return _animation == EAnimation.SpriteColor;
         }
 
         private bool IsFloatOption()
         {
-            return _animation == EAnimation.FillAmount;
+            return _animation == EAnimation.FillAmount || _animation == EAnimation.SpriteFade || _animation == EAnimation.CameraSize;
         }
 
         private bool IsImageAnimation()
         {
             return _animation == EAnimation.FillAmount;
+        }
+
+        private bool IsSpriteAnimation()
+        {
+            return _animation == EAnimation.SpriteColor;
+        }
+
+        private bool IsSpriteFade()
+        {
+            return _animation == EAnimation.SpriteFade;
+        }
+        
+        private bool IsCameraAnimation()
+        {
+            return _animation == EAnimation.CameraSize;
         }
 
         private void OnDestroy()
@@ -206,6 +244,18 @@ namespace Eco.TweenAnimation
             {
                 if (!TryGetComponent(out _image))
                     _image = gameObject.AddComponent<Image>();
+            }
+
+            if (IsSpriteAnimation() && _spriteRenderer == null)
+            {
+                if (!TryGetComponent(out _spriteRenderer))
+                    _spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
+            }
+            
+            if (IsSpriteFade() && _spriteGroup == null)
+            {
+                if (!TryGetComponent(out _spriteGroup))
+                    _spriteGroup = gameObject.AddComponent<SpriteGroup>();
             }
         }
 #endif

@@ -9,14 +9,14 @@ namespace Eco.TweenAnimation
         private Transform _transform;
         private BaseOptions _options;
         private Vector3Options _customOptions;
-        
+
         public void Initialized(AnimationFactory animationFactory)
         {
             _factory = animationFactory;
-            _transform = animationFactory.TweenAnimation.transform;
             _options = _factory.TweenAnimation.BaseOptions;
+            _transform = _options.IsOverrideTransfrom ? _options.OverrideTransfrom : animationFactory.TweenAnimation.transform;
             _customOptions = _factory.TweenAnimation.Vector3Options;
-            if(_customOptions.EndTo == Vector3.one * -1f)
+            if (_customOptions.EndTo == Vector3.one * -1f)
                 _customOptions.EndTo = _transform.localPosition;
         }
 

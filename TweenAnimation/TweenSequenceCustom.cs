@@ -5,6 +5,7 @@ using DG.Tweening;
 using Eco.TweenAnimation;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Serialization;
 
 namespace Eco.TweenAnimation
@@ -13,10 +14,11 @@ namespace Eco.TweenAnimation
     {
         [SerializeField] private EShow _showOnAction;
         [SerializeField] private bool _ignoreTimeScale;
+        [SerializeField] private bool _deActiveItNotShow = true;
         [SerializeField] private AnimationCustom[] _showAnimation;
         [SerializeField] private AnimationCustom[] _hideAnimation;
         [SerializeField, HideLabel] private AnimationDebug _debug;
-
+        
         private void Awake()
         {
             _debug = new AnimationDebug(this);
@@ -30,10 +32,13 @@ namespace Eco.TweenAnimation
                 Show();
         }
 
+        public void Show() => Show(null);
+        public void Hide() => Hide(null);
+
         public override void Show(TweenCallback onComplete = null)
         {
             gameObject.SetActive(true);
-            OnShowComplete = onComplete;
+            OnShowComplete += onComplete;
             
             AnimationCustom animationCustomLast = null;
             foreach (var animationCustom in _showAnimation)
@@ -41,23 +46,29 @@ namespace Eco.TweenAnimation
                 if (animationCustomLast == null || animationCustom.DelayShow > animationCustomLast.DelayShow)
                     animationCustomLast = animationCustom;
                 
-                animationCustom.tweenAnimation.gameObject.SetActive(false);
+                if(_deActiveItNotShow) animationCustom.tweenAnimation.gameObject.SetActive(false);
                 DOVirtual.DelayedCall(animationCustom.DelayShow, () =>
                 {
                     animationCustom.tweenAnimation.gameObject.SetActive(true);
-                    animationCustom.tweenAnimation.Show(() =>
+                    TweenCallback complete = () =>
                     {
                         if (animationCustom.DeActivateOnComplete)
                             animationCustom.tweenAnimation.gameObject.SetActive(false);
                         if (animationCustom == animationCustomLast) CallBack_OnShowComplete();
-                    });
+                    };
+                    
+                    if (animationCustom.Option == AnimationCustom.AnimationOption.Show)
+                        animationCustom.tweenAnimation.Show(complete);
+                    else
+                        animationCustom.tweenAnimation.Hide(complete);
+                    
                 }, _ignoreTimeScale);
             }
         }
 
         public override void Hide(TweenCallback onComplete = null)
         {
-            OnHideComplete = onComplete;
+            OnHideComplete += onComplete;
             
             AnimationCustom animationCustomLast = null;
             foreach (var animationCustom in _hideAnimation)
@@ -68,12 +79,18 @@ namespace Eco.TweenAnimation
                 DOVirtual.DelayedCall(animationCustom.DelayShow, () =>
                 {
                     animationCustom.tweenAnimation.gameObject.SetActive(true);
-                    animationCustom.tweenAnimation.Hide(() =>
+                    
+                    TweenCallback complete = () =>
                     {
                         if (animationCustom.DeActivateOnComplete)
                             animationCustom.tweenAnimation.gameObject.SetActive(false);
                         if (animationCustom == animationCustomLast) CallBack_OnHideComplete();
-                    });
+                    };
+                    
+                    if (animationCustom.Option == AnimationCustom.AnimationOption.Show)
+                        animationCustom.tweenAnimation.Show(complete);
+                    else
+                        animationCustom.tweenAnimation.Hide(complete);
                 }, _ignoreTimeScale);
             }
         }
@@ -101,7 +118,13 @@ namespace Eco.TweenAnimation
         [System.Serializable]
         public class AnimationCustom
         {
+            public enum AnimationOption
+            {
+                Show, Hide
+            }
+            
             public TweenAnimationBase tweenAnimation;
+            public AnimationOption Option;
             public bool DeActivateOnComplete;
             public float DelayShow;
         }
