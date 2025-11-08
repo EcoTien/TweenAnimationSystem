@@ -232,6 +232,37 @@ namespace Eco.TweenAnimation
         }
 
 #if UNITY_EDITOR
+        
+        [Button]
+        private void GetPosition()
+        {
+            if (_baseOptions.IsOverrideTransfrom)
+            {
+                _vector3Options.From = _baseOptions.OverrideTransfrom.localPosition;
+                _vector3Options.EndTo = _baseOptions.OverrideTransfrom.localPosition;
+            }
+            else
+            {
+                _vector3Options.From = transform.localPosition;
+                _vector3Options.EndTo = transform.localPosition;
+            }
+        }
+        
+        [Button]
+        private void GetLocalPosition()
+        {
+            if (_baseOptions.IsOverrideTransfrom)
+            {
+                _vector3Options.From = _baseOptions.OverrideTransfrom.localPosition;
+                _vector3Options.EndTo = _baseOptions.OverrideTransfrom.localPosition;
+            }
+            else
+            {
+                _vector3Options.From = transform.localPosition;
+                _vector3Options.EndTo = transform.localPosition;
+            }
+        }
+        
         private void OnValidate()
         {
             if (IsFadeAnimation() && _canvasGroup == null)
