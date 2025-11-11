@@ -1,11 +1,13 @@
+using System;
 using System.Collections.Generic;
 using DG.Tweening;
+using Eco.TweenAnimation.Core;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Eco.TweenAnimation
 {
-    public class TweenAnimationObject : TweenAnimationBase
+    public class TweenAnimationObject : TweenAnimationBase, IArrayTransform
     {
         [HideLabel] public AnimationDebug AnimationDebug;
         private List<TweenAnimationBase> _tweenAnimations = new ();
@@ -21,7 +23,7 @@ namespace Eco.TweenAnimation
                 _tweenAnimations.Add(tweenAnimationBase);
             }
         }
-        
+
         public override void Show(TweenCallback onComplete = null)
         {
             gameObject.SetActive(true);
@@ -71,6 +73,19 @@ namespace Eco.TweenAnimation
         {
             OnHideComplete?.Invoke();
         }
+        
+        public override Transform GetTransform()
+        {
+            return transform;
+        }
+        
+        public Transform[] GetTransforms()
+        {
+            List<Transform> transforms = new();
+            foreach (var tweenAnimationBase in _tweenAnimations)
+                transforms.Add(tweenAnimationBase.GetTransform());
+            return transforms.ToArray();
+        }
 
         public override void Kill()
         {
@@ -81,5 +96,7 @@ namespace Eco.TweenAnimation
         {
             
         }
+
+  
     }
 }

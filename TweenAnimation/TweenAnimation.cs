@@ -157,6 +157,38 @@ namespace Eco.TweenAnimation
             _tweener?.Complete();
             _ianimation?.SetAnimationFrom();
         }
+        
+        /*[SerializeField, LabelText("Canvas Group"), TabGroup("Animation Setting"), ShowIf("IsFadeAnimation")]
+        private CanvasGroup _canvasGroup;
+
+        [SerializeField, LabelText("Image"), TabGroup("Animation Setting"), ShowIf("IsImageAnimation")]
+        private Image _image;
+        
+        [SerializeField, LabelText("Sprite Renderer"), TabGroup("Animation Setting"), ShowIf("IsSpriteAnimation")]
+        private SpriteRenderer _spriteRenderer;
+        
+        [SerializeField, LabelText("Sprite Group"), TabGroup("Animation Setting"), ShowIf("IsSpriteFade")]
+        private SpriteGroup _spriteGroup;
+        
+        [SerializeField, LabelText("Camera Group"), TabGroup("Animation Setting"), ShowIf("IsCameraAnimation")]
+        private Camera _camera;*/
+        
+        public override Transform GetTransform()
+        {
+            if(IsVector3Option())
+                return _baseOptions.IsOverrideTransfrom ? _baseOptions.OverrideTransfrom : transform;
+            if (IsFadeAnimation())
+                return _canvasGroup.transform;
+            if (IsImageAnimation())
+                return _image.transform;
+            if(IsSpriteAnimation())
+                return _spriteRenderer.transform;
+            if(IsSpriteFade())
+                return _spriteGroup.transform;
+            if(IsCameraAnimation())
+                return _camera.transform;
+            return transform;
+        }
 
         private void CallBackShowComplete()
         {

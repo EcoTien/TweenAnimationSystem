@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using Eco.TweenAnimation;
+using Eco.TweenAnimation.Core;
 using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Serialization;
@@ -34,7 +36,7 @@ namespace Eco.TweenAnimation
 
         public void Show() => Show(null);
         public void Hide() => Hide(null);
-
+        
         public override void Show(TweenCallback onComplete = null)
         {
             gameObject.SetActive(true);
@@ -45,15 +47,15 @@ namespace Eco.TweenAnimation
             {
                 if (animationCustomLast == null || animationCustom.DelayShow > animationCustomLast.DelayShow)
                     animationCustomLast = animationCustom;
-                
-                if(_deActiveItNotShow) animationCustom.tweenAnimation.gameObject.SetActive(false);
+
+                if (_deActiveItNotShow) CheckAndSetActive(animationCustom, false);
                 DOVirtual.DelayedCall(animationCustom.DelayShow, () =>
                 {
-                    animationCustom.tweenAnimation.gameObject.SetActive(true);
+                    CheckAndSetActive(animationCustom, true);
                     TweenCallback complete = () =>
                     {
                         if (animationCustom.DeActivateOnComplete)
-                            animationCustom.tweenAnimation.gameObject.SetActive(false);
+                            CheckAndSetActive(animationCustom, false);
                         if (animationCustom == animationCustomLast) CallBack_OnShowComplete();
                     };
                     
@@ -78,12 +80,12 @@ namespace Eco.TweenAnimation
                 
                 DOVirtual.DelayedCall(animationCustom.DelayShow, () =>
                 {
-                    animationCustom.tweenAnimation.gameObject.SetActive(true);
+                    CheckAndSetActive(animationCustom, true);
                     
                     TweenCallback complete = () =>
                     {
                         if (animationCustom.DeActivateOnComplete)
-                            animationCustom.tweenAnimation.gameObject.SetActive(false);
+                            CheckAndSetActive(animationCustom, false);
                         if (animationCustom == animationCustomLast) CallBack_OnHideComplete();
                     };
                     
@@ -93,6 +95,19 @@ namespace Eco.TweenAnimation
                         animationCustom.tweenAnimation.Hide(complete);
                 }, _ignoreTimeScale);
             }
+        }
+        
+        public override Transform GetTransform()
+        {
+            return transform;
+        }
+
+        private void CheckAndSetActive(AnimationCustom animationCustom, bool isActive)
+        {
+            if (animationCustom.tweenAnimation is IArrayTransform arrayTransform)
+                arrayTransform.GetTransforms().ForEach(trans => trans.gameObject.SetActive(isActive));
+            else
+                animationCustom.tweenAnimation.GetTransform().gameObject.SetActive(isActive);
         }
         
         private void CallBack_OnShowComplete()

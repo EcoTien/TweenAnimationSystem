@@ -50,6 +50,11 @@ namespace Eco.TweenAnimation
                 _hideOption.Sequences[i].tweenAnimation.gameObject.SetActive(false);
         }
 
+        public override Transform GetTransform()
+        {
+            return transform;
+        }
+
         public override void Show(TweenCallback onComplete = null)
         {
             gameObject.SetActive(true);

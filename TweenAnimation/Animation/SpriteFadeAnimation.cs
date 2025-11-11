@@ -21,12 +21,12 @@ namespace Eco.TweenAnimation
 
         public void SetAnimationFrom()
         {
-            _spriteGroup.SetAlphaImmediate(_customOptions.From);
+            _spriteGroup.SetAlpha(_customOptions.From);
         }
 
         public Tweener Show()
         {
-            return DOVirtual.Float(_customOptions.From, _customOptions.To, _options.Duration, _spriteGroup.SetAlphaImmediate)
+            return DOVirtual.Float(_customOptions.From, _customOptions.To, _options.Duration, _spriteGroup.SetAlpha)
                 .SetEase(_options.ShowEase)
                 .SetUpdate(_options.IgnoreTimeScale)
                 .SetDelay(_options.StartDelay);
@@ -34,7 +34,7 @@ namespace Eco.TweenAnimation
 
         public Tweener Hide()
         {
-            return DOVirtual.Float(_customOptions.To, _customOptions.From, _options.Duration, _spriteGroup.SetAlphaImmediate)
+            return DOVirtual.Float(_customOptions.To, _customOptions.From, _options.Duration, _spriteGroup.SetAlpha)
                 .SetEase(_options.ShowEase)
                 .SetUpdate(_options.IgnoreTimeScale)
                 .SetDelay(_options.StartDelay);
