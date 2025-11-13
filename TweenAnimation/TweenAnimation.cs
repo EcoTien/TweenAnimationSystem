@@ -266,33 +266,40 @@ namespace Eco.TweenAnimation
 #if UNITY_EDITOR
         
         [Button]
-        private void GetPosition()
+        private void GetFormPosition()
         {
             if (_baseOptions.IsOverrideTransfrom)
-            {
                 _vector3Options.From = _baseOptions.OverrideTransfrom.localPosition;
-                _vector3Options.EndTo = _baseOptions.OverrideTransfrom.localPosition;
-            }
             else
-            {
                 _vector3Options.From = transform.localPosition;
-                _vector3Options.EndTo = transform.localPosition;
-            }
         }
         
         [Button]
-        private void GetLocalPosition()
+        private void GetEndToPosition()
         {
             if (_baseOptions.IsOverrideTransfrom)
-            {
-                _vector3Options.From = _baseOptions.OverrideTransfrom.localPosition;
                 _vector3Options.EndTo = _baseOptions.OverrideTransfrom.localPosition;
-            }
             else
-            {
-                _vector3Options.From = transform.localPosition;
                 _vector3Options.EndTo = transform.localPosition;
-            }
+        }
+        
+                
+        [Button]
+        private void SetFormPosition()
+        {
+            if (_baseOptions.IsOverrideTransfrom)
+                _baseOptions.OverrideTransfrom.localPosition = _vector3Options.From;
+            else
+                transform.localPosition = _vector3Options.From;
+        }
+        
+        [Button]
+        private void SetEndToPosition()
+        {
+            if (_baseOptions.IsOverrideTransfrom)
+                _baseOptions.OverrideTransfrom.localPosition = _vector3Options.EndTo;
+            else
+                transform.localPosition = _vector3Options.EndTo;
         }
         
         private void OnValidate()
