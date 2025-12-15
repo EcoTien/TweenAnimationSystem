@@ -89,14 +89,14 @@ namespace Eco.TweenAnimation
 
         public override void Kill()
         {
-            
+            foreach (var tweenAnimationBase in _tweenAnimations)
+                tweenAnimationBase.Kill();
         }
 
         public override void Complete()
         {
-            
+            foreach (var tweenAnimationBase in _tweenAnimations)
+                tweenAnimationBase.Complete();
         }
-
-  
     }
 }
